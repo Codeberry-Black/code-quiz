@@ -13,7 +13,7 @@ folders.forEach(function (folder) {
     files[folder] = filesInDir;
 });
 
-fs.writeFile('snippets.json', JSON.stringify(files, os.EOL, ' '), function (err) {
+fs.writeFile('../data/snippets.json', JSON.stringify(files, os.EOL, ' '), function (err) {
     if (err) {
         console.log(err);
     } else {
@@ -21,7 +21,7 @@ fs.writeFile('snippets.json', JSON.stringify(files, os.EOL, ' '), function (err)
     }
 });
 
-fs.writeFile('countedSnippets.json', JSON.stringify(countedSnippets, os.EOL, ' '), function (err) {
+fs.writeFile('../data/countedSnippets.json', JSON.stringify(countedSnippets, os.EOL, ' '), function (err) {
     if (err) {
         console.log(err);
     } else {
