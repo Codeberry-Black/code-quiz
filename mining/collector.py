@@ -206,9 +206,18 @@ t = TagsWriter()
 manager = Manager(t)
 
 loaders = {
-    'newest': PageLoader({'order': 'desc', 'sort': 'creation'}, manager),
-    'oldest': PageLoader({'order': 'asc', 'sort': 'creation'}, manager),
-    'most_active': PageLoader({'order': 'desc', 'sort': 'votes'}, manager)
+    'netlogo': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'netlogo'}, manager),
+    'actionscript': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'actionscript'}, manager),
+    'cobol': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'cobol'}, manager),
+    'tcl': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'tcl'}, manager),
+    'd': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'd'}, manager),
+    'netlogo': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'netlogo'}, manager),
+    'assembly': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'assembly'}, manager),
+    'fortran': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'fortran'}, manager),
+    'scratch': PageLoader({'order': 'desc', 'sort': 'creation', 'tagged': 'scratch'}, manager),
+    #'newest': PageLoader({'order': 'desc', 'sort': 'creation'}, manager),
+    #'oldest': PageLoader({'order': 'asc', 'sort': 'creation'}, manager),
+    #'most_active': PageLoader({'order': 'desc', 'sort': 'votes'}, manager)
 }
 
 for k in loaders:

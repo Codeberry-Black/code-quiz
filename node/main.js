@@ -1,8 +1,9 @@
 'use strict';
 
 var fs = require('fs'),
-    path = require('path');
-
+    path = require('path'),
+    http = require("http");
+    
 var get_json = function(name, callback){
   var filePath = path.normalize('../data/'+name+'.json');
   fs.readFile(filePath, 'utf8', function (err, data) {
@@ -22,7 +23,6 @@ var get_snippet = function(lang, id){
 
 var langs = {},
     games = {}
-
 ;
 
 var shuffle = function shuffle(o){
@@ -69,6 +69,54 @@ var get_game_set = function(count, ansCount){
 	return selectedSnippets;
 };
 
+var server = {
+  list_games: function(){
+    
+  },
+  
+  
+  
+  
+  
+  
+  options: {
+    hostname: 'localhost',
+    port: 123456
+  },
+  errors:{
+    
+    4000: "Not found.",
+    5000: "Inernal server error."
+  },
+  map: {
+    "games": "list_games"
+    
+  },
+  instance: function(request, response){
+    var me = {
+      send_resp: function(data){
+        me.response.writeHeader(200, {"Content-Type": "application/json"});  
+        response.write("Hello World");  
+        response.end();
+      },
+      send_error: function(code){
+        if( !server.errors[code] ){ code=5000; }
+        me.send_resp({result:code, message: server.errors[code]});
+      },
+      init: function(request, response){
+        me.request = request;
+        me.response = response;
+        
+        console.log(request);
+        
+        // some map ..
+        
+      }
+    };
+  }
+};
+
+
 var init = function(){
   get_json('langs', function(ret){
     for (var k in ret){
@@ -77,12 +125,15 @@ var init = function(){
     get_json('snippets', function(ret){
       for (var k in ret){
         langs[k].data = ret[k];
-      }
-	  
-	  
+      }	  
 	  
 	  console.log(get_game_set(3, 4));
-	  
+      get_json('games', function(ret){
+           
+        
+        console.log(ret);
+      });
+      
       // GET USERS
       // GET GAMES
       // START SERVER
@@ -94,4 +145,6 @@ var init = function(){
 
 init();
 
-var server = {};
+http.createServer(function(request,response){ 
+  server.instance(request, response);
+}).listen(server.options.port);  
