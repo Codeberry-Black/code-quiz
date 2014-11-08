@@ -1,0 +1,17 @@
+.codeView{background-color: #888888; overflow: auto;}
+.str{color: #EC7600;}
+.kwd{color: #18bc9c;}
+.com{color: #1c25c4;}
+.typ{color: #3498db;}
+.lit{color: #f4c722;}
+.pun{color: #2c3e50;}
+.pln{color: #000000;}
+.tag{color: #b8e07e;}
+.atn{color: #d20ddf;}
+.atv{color: #e74c3c;}
+.dec{color: purple; }
+pre.prettyprint{ border: 0px solid #888; margin: 0;}
+ol.linenums{ margin-top: 0; margin-bottom: 0; padding-left: 65px;}
+.prettyprint {background: #eeeeee;}
+li.L0, li.L1, li.L2, li.L3, li.L4, li.L5, li.L6, li.L7, li.L8, li.L9{ color: #888888; list-style-type: decimal; }
+li.L1, li.L3, li.L5, li.L7, li.L9 {background: #fcfcfc;}
