@@ -29,6 +29,7 @@ function getProfileInfo() {
     FB.api('/me', function (response) {
         var holder = $("#profile-info");
         var name = response.name;
+        var auth = response.authResponse.accessToken;
         var url = "https://graph.facebook.com/" + response.id + "/picture";
         holder.append("<img src =" + url + "/><h1 id='greetings'>" + name + "</h1>");
     });

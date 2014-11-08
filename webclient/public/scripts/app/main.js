@@ -19,33 +19,12 @@ var app = (function () {
         return true;
     });
 
-    var onBackKeyDown = function(e) {
-        e.preventDefault();
-        navigator.notification.confirm('Do you really want to exit?', function (confirmed) {
-            var exit = function () {
-                navigator.app.exitApp();
-            };
-            if (confirmed === true || confirmed === 1) {
-                AppHelper.logout().then(exit, exit);
-            }
-        }, 'Exit', 'Ok,Cancel');
-    };
-    var onDeviceReady = function() {
-        //Handle document events
-        document.addEventListener("backbutton", onBackKeyDown, false);
-    };
-
     document.addEventListener("deviceready", onDeviceReady, false);
 
     var applicationSettings = {
         emptyGuid: '00000000-0000-0000-0000-000000000000',
         apiKey: '733423956732622'
     };
-
-    // initialize Everlive SDK
-    var el = new Everlive({
-        apiKey: applicationSettings.apiKey
-    });
 
     var facebook = new IdentityProvider({
         name: "Facebook",
@@ -60,31 +39,10 @@ var app = (function () {
     });
     
     var AppHelper = {
-        resolveProfilePictureUrl: function (id) {
-            if (id && id !== applicationSettings.emptyGuid) {
-                return el.Files.getDownloadUrl(id);
-            }
-            else {
-                return 'styles/images/avatar.png';
-            }
-        },
-        resolvePictureUrl: function (id) {
-            if (id && id !== applicationSettings.emptyGuid) {
-                return el.Files.getDownloadUrl(id);
-            }
-            else {
-                return '';
-            }
-        },
-        formatDate: function (dateString) {
-            var date = new Date(dateString);
-            var year = date.getFullYear().toString();
-            var month = date.getMonth().toString();
-            var day = date.getDate().toString();
-            return day + '.' + month + '.' + year;
-        },
         logout: function () {
-            return el.Users.logout();
+            //return el.Users.logout();
+            //TODO Logout from server
+            return ;
         }
     };
 
@@ -105,19 +63,19 @@ var app = (function () {
         });
         activities.sync();*/
     };
-    var usersModel = (function () {
+    var gamesModel = (function () {
         var currentUser = kendo.observable({ data: null });
         var usersData;
-        var loadUsers = function () {
-            return el.Users.currentUser()
+        var loadGames = function () {
+            return //TODO load from server el.Users.currentUser()
             .then(function (data) {
                 var currentUserData = data.result;
-                currentUserData.PictureUrl = AppHelper.resolveProfilePictureUrl(currentUserData.Picture);
+                //currentUserData.PictureUrl = AppHelper.resolveProfilePictureUrl(currentUserData.Picture);
                 currentUser.set('data', currentUserData);
-                return el.Users.get();
+                return ;//TODO get games list el.Users.get();
             })
             .then(function (data) {
-                usersData = new kendo.data.ObservableArray(data.result);
+                gamesData = new kendo.data.ObservableArray(data.result);
             })
             .then(null,
                   function (err) {
@@ -126,9 +84,9 @@ var app = (function () {
             );
         };
         return {
-            load: loadUsers,
-            users: function () {
-                return usersData;
+            load: loadGames,
+            games: function () {
+                return gamesData;
             },
             currentUser: currentUser
         };
@@ -136,23 +94,6 @@ var app = (function () {
 
     // login view model
     var loginViewModel = (function () {
-        var login = function () {
-            var username = $('#loginUsername').val();
-            var password = $('#loginPassword').val();
-
-            el.Users.login(username, password)
-            .then(function () {
-                return usersModel.load();
-            })
-            .then(function () {
-                mobileApp.navigate('views/activitiesView.html');
-            })
-            .then(null,
-                  function (err) {
-                      showError(err.message);
-                  }
-            );
-        };
         var loginWithFacebook = function() {
             mobileApp.showLoading();
             facebook.getAccessToken(function(token) {
@@ -180,54 +121,11 @@ var app = (function () {
             loginWithFacebook: loginWithFacebook
         };
     }());
-
-    // signup view model
-    var singupViewModel = (function () {
-        var dataSource;
-        var signup = function () {
-            dataSource.Gender = parseInt(dataSource.Gender);
-            var birthDate = new Date(dataSource.BirthDate);
-            if (birthDate.toJSON() === null)
-                birthDate = new Date();
-            dataSource.BirthDate = birthDate;
-            Everlive.$.Users.register(
-                dataSource.Username,
-                dataSource.Password,
-                dataSource)
-            .then(function () {
-                showAlert("Registration successful");
-                mobileApp.navigate('#welcome');
-            },
-                  function (err) {
-                      showError(err.message);
-                  }
-            );
-        };
-        var show = function () {
-            dataSource = kendo.observable({
-                Username: '',
-                Password: '',
-                DisplayName: '',
-                Email: '',
-                Gender: '1',
-                About: '',
-                Friends: [],
-                BirthDate: new Date()
-            });
-            kendo.bind($('#signup-form'), dataSource, kendo.mobile.ui);
-        };
-        return {
-            show: show,
-            signup: signup
-        };
-    }());
     
     return {
         viewModels: {
             login: loginViewModel,
-            signup: singupViewModel,
-            usersModel: usersModel,
-            playingGame: playingGameViewModel
+            gamesModel: gamesModel
         },
         mobileApp: mobileApp,
         joinToGame: joinToGame

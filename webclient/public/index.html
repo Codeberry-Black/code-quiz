@@ -42,7 +42,10 @@
             </ul>
         </div>
     </div>
-    <div class="welcome">
+    <section data-role="layout" data-id="default">
+        <!--View content will render here-->
+    </section>
+    <div data-role="view" id="welcome" data-layout="default" class="welcome" data-model="loginViewModel">
         <div class="welcome-text">
             <figure class="header-image"><img src="imgs/h.png" alt="Join you in world code quiz"/></figure>
             <div class="text-info"></div>
@@ -51,8 +54,6 @@
             <input type="button" class="btn btn-success" value="PLAY >"/>
         </div>
         <figure><img src="imgs/logo.png" alt="code-quiz-logo"/></figure>
-    </div>
-    <div data-role="view" id="game" data-layout="default" class="game-scrn form-view" data-model="gameViewModel">
     </div>
     
     <script src="scripts/app/login.js"></script>
