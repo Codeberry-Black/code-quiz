@@ -46,5 +46,8 @@
     "groovy":"Groovy",
 	"clojure":"Clojure",
 	"coldfusion":"Coldfusion",
-	"prolog":"Prolog"
+	"prolog":"Prolog",
+	"sql":"SQL",
+	"nosql":"NoSQL",
+	"sqlite":"SQLite"
 }
