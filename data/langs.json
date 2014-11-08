@@ -2,7 +2,7 @@
     "js": "JavaScript",
     "css": "CSS",
     "c":"C",
-    "oc":"Obective-C",
+    "objective-c":"Obective-C",
     "java":"Java",
     "c++":"C++",
     "c#":"C#",
@@ -13,7 +13,7 @@
     "tsql":"Transact-SQL",
     "delphi":"Delphi",
     "vb.net":"Visual Basic .NET",
-    "vb":"Visual Basic",
+    "vbscript":"Visual Basic",
     "r":"R",
     "ruby":"Ruby",
     "dart":"Dart",
@@ -24,7 +24,7 @@
     "sas":"SAS",
     "plsql":"PL/SQL",
     "ps":"PostScript",
-    "as":"ActionScript",
+    "actionscript":"ActionScript",
     "netlogo":"Logo",
     "matlab":"MATLAB",
     "lisp":"Lisp",
@@ -49,5 +49,6 @@
 	"prolog":"Prolog",
 	"sql":"SQL",
 	"nosql":"NoSQL",
-	"sqlite":"SQLite"
+	"sqlite":"SQLite",
+  "opengl": "OpenGL"
 }

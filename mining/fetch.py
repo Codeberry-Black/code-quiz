@@ -6,7 +6,7 @@ tagsfolder = './tags'
 resultfolder = './../data/snippets'
 
 def make_codes(data):
-    parts = data.split('<code>')
+    parts = data.split('<pre><code>')
     if parts.__len__() == 1:
         return False
 
@@ -15,7 +15,7 @@ def make_codes(data):
         if k % 2 == 0:
             continue
 
-        subparts = v.split('</code>')
+        subparts = v.split('</code></pre>')
         code = subparts[0]
         if 30 < code.__len__() < 3000:
             result.append(code)
@@ -26,6 +26,7 @@ def make_codes(data):
 with open(tagsfile) as filetags:
     for tag in filetags.readlines():
         tag = tag.strip()
+        print(tag)
         path = os.path.join(tagsfolder, tag)
         current = 1
 
@@ -47,3 +48,4 @@ with open(tagsfile) as filetags:
                             with codecs.open(os.path.join(folder, current.__str__()), "w", "utf-8") as out:
                                 out.write(code)
                                 current = current + 1
+        print(current)
