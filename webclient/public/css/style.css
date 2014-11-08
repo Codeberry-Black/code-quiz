@@ -1,5 +1,8 @@
 body{
-    background-color: #eeeeee;
+    background:
+        url('../imgs/bgr1.png') left no-repeat,
+        url('../imgs/bgr2.png') right top no-repeat,
+        #eeeeee;
 }
 
 main{
