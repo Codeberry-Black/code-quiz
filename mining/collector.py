@@ -31,7 +31,7 @@ class Manager():
                 self.passed[etype].add(ID)
                 self.body[etype].append((ID, body))
 
-                #print etype,  self.body[etype].__len__()
+                # print etype,  self.body[etype].__len__()
                 for tag in tags:
                     if not tag in self.tags[etype]:
                         self.tags[etype][tag] = []
@@ -147,28 +147,37 @@ class TagsWriter():
 
 class PageLoader(threading.Thread):
     def download(self):
-        query = urllib.urlencode(self.params)
-        print(urllib.urlencode(self.params))
 
-        url = self.baseurl + '?' + query
+        try:
+            query = urllib.urlencode(self.params)
+            url = self.baseurl + '?' + query
 
-        request = urllib2.Request(url)
-        request.add_header('Accept-encoding', 'gzip')
-        response = urllib2.urlopen(request)
-        if response.info().get('Content-Encoding') == 'gzip':
-            buf = StringIO(response.read())
-            f = gzip.GzipFile(fileobj=buf)
-            raw = f.read()
-        else:
-            raw = response.read()
+            print(url)
 
-        data = json.loads(raw)
+            request = urllib2.Request(url)
+            request.add_header('Accept-encoding', 'gzip')
+            response = urllib2.urlopen(request)
+            if response.info().get('Content-Encoding') == 'gzip':
+                buf = StringIO(response.read())
+                f = gzip.GzipFile(fileobj=buf)
+                raw = f.read()
+            else:
+                raw = response.read()
 
-        for question in data[u'items']:
-            self.manager.add_entry(question[u'question_id'], question[u'body'], question[u'tags'], 'question')
-            if u'answers' in question and question[u'answers'].__len__() > 0:
-                for answer in question[u'answers']:
-                    self.manager.add_entry(answer[u'answer_id'], answer[u'body'], question[u'tags'], 'answer')
+            data = json.loads(raw)
+
+            for question in data[u'items']:
+                self.manager.add_entry(question[u'question_id'], question[u'body'], question[u'tags'], 'question')
+                if u'answers' in question and question[u'answers'].__len__() > 0:
+                    for answer in question[u'answers']:
+                        self.manager.add_entry(answer[u'answer_id'], answer[u'body'], question[u'tags'], 'answer')
+
+            self.manager.flush_tags(True)
+
+        except:
+            return False;
+
+        return True
 
     def __init__(self, params, manager):
         threading.Thread.__init__(self)
@@ -185,16 +194,16 @@ class PageLoader(threading.Thread):
         self.manager = manager
 
     def run(self):
-        page = 1
+        page = 50
         while True:
             self.params['page'] = page
-            page = page + 1
-            self.download()
+            res = self.download()
+            if res:
+                page = page + 1
 
 
 t = TagsWriter()
 manager = Manager(t)
-
 
 loaders = {
     'newest': PageLoader({'order': 'desc', 'sort': 'creation'}, manager),
