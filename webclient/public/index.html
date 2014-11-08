@@ -5,6 +5,7 @@
     <title>Code Quiz</title>
     <link rel="stylesheet" href="http://bootswatch.com/flatly/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/code-styles.css"/>
     <link rel="stylesheet" href="css/reset.css"/>
     <link rel="stylesheet" href="css/style.css"/>
 </head>
@@ -94,6 +95,15 @@ def is_palindrome(s):
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
+</script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="scripts/libs/jquery-2.1.1.min.js"></script>
+<script src="scripts/libs/prettify.js"></script>
+<script>
+    $(function(){
+        var view=$('pre').attr('class', 'prettyprint linenums');
+        prettyPrint();
+    });
 </script>
 </body>
 </html>
