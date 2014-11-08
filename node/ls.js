@@ -1,3 +1,12 @@
-var path = '../data/snippets';
+'use strict';
 
-// TODO list this folder
+var fs = require('fs');
+var path = '../data/snippets';
+var folders = fs.readdirSync(path);
+var files = {};
+
+folders.forEach(function (folder) {
+    files[folder] = fs.readdirSync(path + '/' + folder);
+});
+
+console.log(files);

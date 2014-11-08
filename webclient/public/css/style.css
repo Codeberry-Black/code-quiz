@@ -1,0 +1,35 @@
+body{
+    background-color: #eeeeee;
+}
+
+main{
+    background-color: #ffffff;
+    max-width: 780px;
+    margin: 0 auto;
+    font: 16px;
+}
+nav > ul > li{
+    font: 1.9em;
+    display: inline-block;
+    padding: 10px 20px;
+    line-height: 40px;
+}
+
+.content{
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+#code-here{
+    height: 300px;
+    border: 1px solid gray;
+}
+
+.time{
+    max-width: 600px;
+}
+
+#possible-answers{
+    align-content: center;
+}
