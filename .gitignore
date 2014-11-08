@@ -15,6 +15,7 @@ Thumbs.db
 # Folders to ignore
 bower_components
 node_modules
+kendo
 
 #Libraries and frameworks
 bootstrap.min.css

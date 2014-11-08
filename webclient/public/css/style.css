@@ -1,8 +1,8 @@
 body{
     background:
-    url('../imgs/bgrlogo.png') left top no-repeat,
+    /*url('../imgs/bgrlogo.png') left top no-repeat,*/
     url('../imgs/bgr1.png') left no-repeat,
-    url('../imgs/bgr2.png') right top no-repeat,
+    url('../imgs/bgr2.png') right bottom no-repeat,
         #eeeeee;
 }
 
@@ -19,6 +19,20 @@ nav > ul > li{
     line-height: 40px;
 }
 
+/*Index html styles */
+
+.welcome-text{
+    margin-left: 30px;
+    max-width: 500px;
+    float: left;
+}
+
+.welcome > figure {
+    text-align: right;
+}
+
+
+/*sampleDemo.html styles*/
 .content{
     max-width: 720px;
     margin: 0 auto;
@@ -66,4 +80,8 @@ nav > ul > li{
 
 #players{
     float: right;
+}
+
+footer{
+    border-bottom: 1px solid #000000;
 }

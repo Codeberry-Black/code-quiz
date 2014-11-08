@@ -226,9 +226,10 @@ var app = (function () {
         viewModels: {
             login: loginViewModel,
             signup: singupViewModel,
-            usersModel: usersModel
+            usersModel: usersModel,
+            playingGame: playingGameViewModel
         },
         mobileApp: mobileApp,
-        joinToRoute: joinToRoute
+        joinToGame: joinToGame
     };
 }());
