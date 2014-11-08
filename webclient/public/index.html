@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Code Quiz</title>
+    <script src="scripts/libs/jquery-1.11.1.min.js"></script>
     <link rel="shortcut icon" href="imgs/favicon.ico" type="image/x-icon">
     <link rel="icon" href="imgs/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="http://bootswatch.com/flatly/bootstrap.min.css"/>
@@ -25,6 +26,7 @@
             </button>
             <a class="navbar-brand nav-logo" href="index.html"><img src="imgs/plainlogo.png" alt=""/></a>
         </div>
+        
         <div class="navbar-collapse collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="game.html">Battle Play</a></li>
@@ -33,7 +35,10 @@
                 <li><a href="feedback.html">Feedback</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><a href="#"></a></li>
+                <li class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><div id="fb-root"></div>
+                    <div id="profile-info"></div>
+                    <fb:login-button show-faces="true" width="200" max-rows="1" id="log" ></fb:login-button>
+                </li>
             </ul>
         </div>
     </div>
@@ -47,6 +52,10 @@
         </div>
         <figure><img src="imgs/logo.png" alt="code-quiz-logo"/></figure>
     </div>
+    <div data-role="view" id="game" data-layout="default" class="game-scrn form-view" data-model="gameViewModel">
+    </div>
+    
+    <script src="scripts/app/login.js"></script>
     <footer class="panel-footer panel-primary">
         <div>
             <br/>
@@ -54,27 +63,6 @@
         </div>
     </footer>
 </main>
-</div>
-<script>
-    window.fbAsyncInit = function() {
-        FB.init({
-            appId      : '733423956732622',
-            xfbml      : true,
-            version    : 'v2.2'
-        });
-    };
 
-    (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-</script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script src="kendo/js/jquery.min.js"></script>
-<script src="//cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
-<script src="kendo/js/kendo.all.min.js"></script>
 </body>
 </html>
