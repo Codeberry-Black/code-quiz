@@ -21,35 +21,53 @@
         </div>
         <div class="navbar-collapse collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav">
-                <li><a href="#">Single Player</a></li>
-                <li><a href="#">Battle Mode</a></li>
+                <li><a href="#">Battle Play</a></li>
                 <li><a href="#">Hall Of Fame</a></li>
+                <li><a href="#">Feedback</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><a href="#">Profile</a></li>
+                <li class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><a href="#">Welcome, Ylin!</a></li>
             </ul>
         </div>
     </div>
     <div class="content">
         <article>
-            <h1 class="h1">Some heading</h1>
-            <div class="progress progress-striped active time">
-                <div class="progress-bar" style="width: 10%"></div>
-            </div>
             <br/>
-            <div id="code-here" class="panel panel-primary">
+            <div id="game" class="panel panel-primary">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Code snippet</h3>
+                    <span class="time-text">Time: </span>
+                    <div class="progress progress-striped active time">
+                        <span class="progress-bar" style="width: 30%"></span>
+                    </div>
+                </div>
+                <div id="code-here">
+                    <br/>
+                    <pre>
+def is_palindrome(s):
+	s = str(s).lower()
+	s = re.sub('[\W+]', '', s)
+
+	if len(s) <= 1:
+		return True
+	elif s[:1] != s[len(s)-1:]:
+		return False
+	else:
+		return is_palindrome(s[1:len(s)-1])
+                    </pre>
+                    <br/>
+                    <div id="answers-container">
+                        <div id="possible-answers" class="navbar-collapse collapse">
+                            <ul class="navbar-nav">
+                                <li><a href="#" class="btn btn-default">JavaScript</a></li>
+                                <li><a href="#" class="btn btn-default">Python</a></li>
+                                <li><a href="#" class="btn btn-default">Ruby</a></li>
+                                <li><a href="#" class="btn btn-default">Pascal</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
             <span class="icon-magic"></span>
-            <br/>
-            <div id="possible-answers center">
-                <a href="#" class="btn btn-default">Answer</a>
-                <a href="#" class="btn btn-default">Answer</a>
-                <a href="#" class="btn btn-default">Answer</a>
-                <a href="#" class="btn btn-default">Answer</a>
-            </div>
             <br/>
         </article>
     </div>

@@ -19,20 +19,50 @@ nav > ul > li{
 }
 
 .content{
-    max-width: 600px;
+    max-width: 720px;
     margin: 0 auto;
     padding: 10px;
 }
 
-#code-here{
-    height: 300px;
+#game{
+    height: 400px;
     border: 1px solid gray;
+    position: relative;
+}
+
+#code-here{
+
+}
+
+.time-text{
+    float: left;
+    padding-right: 20px;
 }
 
 .time{
     max-width: 600px;
+    margin-top: 5px;
+}
+
+#answers-container{
+    background-color: #2c3e50;
+    padding: 5px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 #possible-answers{
-    align-content: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#possible-answers > ul > li > a{
+    margin: 0 5px;
+    padding: 10px;
+    min-width: 100px;
+}
+
+#players{
+    float: right;
 }
