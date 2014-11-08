@@ -15,10 +15,7 @@ var get_json = function(name, callback){
 
 var get_snippet = function(lang, id){
 	var filePath = path.normalize('../data/snippets/'+lang+"/"+id);
-	fs.readFile(filePath, 'utf8', function (err, data) {
-    if (err) {console.log(err);}
-    callback(data);
-  });
+	return fs.readFileSync(filePath, 'utf8').toString();
 };
 
 var langs = {},
@@ -69,34 +66,48 @@ var get_game_set = function(count, ansCount){
 	return selectedSnippets;
 };
 
+
 var server = {
-  list_games: function(){
+  list_games: function(params){
     
+    return {result: 0, langs: langs};
   },
-  
-  
+  get_snippet: function(params){
+    if( !params.lang ){return 1000;}
+    if( !params.id ){return 1001;}
+
+    return {
+      result: 0,
+      snippet: get_snippet( params.lang, params.id)
+    };
+  },
   
   
   
   
   options: {
     hostname: 'localhost',
-    port: 123456
+    port: 12346
   },
   errors:{
+    1000: "'lang' is required",
+    1001: "'id' is required",
     
-    4000: "Not found.",
+    
+    4000: "Method not found.",
     5000: "Inernal server error."
   },
   map: {
-    "games": "list_games"
+    "/games": "list_games",
+    "/incr": "increment",
+    "/snippet": "get_snippet"
     
   },
   instance: function(request, response){
     var me = {
       send_resp: function(data){
         me.response.writeHeader(200, {"Content-Type": "application/json"});  
-        response.write("Hello World");  
+        response.write(JSON.stringify(data));  
         response.end();
       },
       send_error: function(code){
@@ -107,12 +118,33 @@ var server = {
         me.request = request;
         me.response = response;
         
-        console.log(request);
+        var parts = request.url.split("?",2);
+        var method = parts[0];
         
-        // some map ..
+        if (parts.length == 1){parts[1] = '';}
         
+        if ( !server.map[method]){
+          me.send_error(4000);
+          return;
+        }
+        parts = parts[1].split('&');
+        var params={};
+        for(var k in parts){
+          var sparts = parts[k].split('=');
+          if(sparts[0] === ''){continue;}
+          if(sparts.length == 1){ sparts[1] = ''; }
+          params[sparts[0]] = decodeURIComponent(sparts[1]);
+        }
+        
+        var result = server[ server.map[method ] ] ( params );
+        if(!result || typeof result == "number" ){
+          me.send_error(result);
+        }else{
+          me.send_resp(result);
+        }
       }
     };
+    me.init(request, response);
   }
 };
 
@@ -136,7 +168,11 @@ var init = function(){
       
       // GET USERS
       // GET GAMES
-      // START SERVER
+      
+      http.createServer(function(request,response){ 
+        console.log(request.url);
+        server.instance(request, response);
+      }).listen(server.options.port, server.options.host);
       
       
     });
@@ -145,6 +181,3 @@ var init = function(){
 
 init();
 
-http.createServer(function(request,response){ 
-  server.instance(request, response);
-}).listen(server.options.port);  
