@@ -2,12 +2,12 @@
 
 var fs = require('fs'),
     os = require('os'),
-    path = '../data/snippets',
+    dataPath = '../data/snippets',
     folders = fs.readdirSync(path),
     files = {};
 
 folders.forEach(function (folder) {
-    files[folder] = fs.readdirSync(path + '/' + folder);
+    files[folder] = fs.readdirSync(dataPath + '/' + folder);
 });
 
 fs.writeFile('snippets.json', JSON.stringify(files, os.EOL, ' '), function (err) {
