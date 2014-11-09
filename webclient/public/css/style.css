@@ -206,3 +206,7 @@ footer{
 iframe{
     min-height: 750px;
 }
+
+.mana{
+    float: right;
+}
