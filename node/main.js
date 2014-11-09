@@ -1,9 +1,12 @@
 'use strict';
 
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    http = require('http');
 
-
+var langs = {},
+    games = {},
+    users = {};
 
 var get_snippet = function(lang, id){
       var filePath = path.normalize('../data/snippets/'+lang+"/"+id);
@@ -19,10 +22,6 @@ var get_json = function(name, callback){
   });
 };
 
-var langs = {},
-    games = {}
-;
-
 var shuffle = function shuffle(o){
     for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
@@ -35,9 +34,9 @@ var get_game_set = function(count, ansCount){
 	var keys = Object.keys(langs);
 	var slugs = {};
 	
-	while(elementsSelected != 3){
+	while(elementsSelected !== count){
 		var selectedLang = keys[Math.floor(Math.random() * keys.length)];
-		if(langs[selectedLang].data != 0){
+		if(langs[selectedLang].data.length !== 0){
 			var tempKeys = Object.keys(langs[selectedLang].data);
 			var id = langs[selectedLang].data[tempKeys[Math.floor(Math.random() * tempKeys.length)]];
 			var slug = selectedLang + id;
@@ -52,7 +51,7 @@ var get_game_set = function(count, ansCount){
 				var newAnswer;
 				do{
 					newAnswer = keys[Math.floor(Math.random() * keys.length)];
-				}while(answers.lastIndexOf(newAnswer) != -1);
+				}while(answers.lastIndexOf(newAnswer) !== -1);
 				answers.push(newAnswer);
 			}
 			
@@ -62,30 +61,109 @@ var get_game_set = function(count, ansCount){
 		}	
 	}
 	
-	
-	
 	return selectedSnippets;
 };
 
 
+var dt = 100;
 var server = {
-  list_games: function(params){
-    
-    return {result: 0, langs: langs};
+  list_games: function(params, send){
+    var result = [];
+    for(var k in games){
+      var g = games[k];
+      if(g.started){continue;}
+      
+      result.push({
+        creator: users[g.creator].name,
+        creatorid: users[g.creator].id,
+        players: g.players,
+        maxplayers: g.maxplayers,
+        name: g.name,
+        id: g.id
+      });
+    }
+    send({result: 0, games: result});
   },
-  get_snippet: function(params){
-    if( !params.lang ){return 1000;}
-    if( !params.id ){return 1001;}
+  get_snippet: function(params, send){
+    if( !params.lang ){send(1000); return;}
+    if( !params.id ){send(1001); return;}
 
-    return {
+    send({
       result: 0,
       snippet: get_snippet( params.lang, params.id)
-    };
+    });
   },
   
-  login: function(){
+  wait: function(params, send){
+    i--;
+    console.log(i);
+    var f = function(){
+      if (i > 0){setTimeout(function(){f();}, dt);}
+      else{ send({result:0}); }
+    };
+    f();
+  },
+  wake: function(params, send){
+    i=0;
+    send({result:0});
+  },
+  login: function(params, send){
+    if( !params.id ){send(1001); return;}
+    if( !params.name ){send(1004); return;}
+    if( !params.auth ){send(1003); return;}
     
+    // TODO: check that the auth is real :)
     
+    users[params.id] = {
+      id: params.id,
+      name: params.name,
+      auth: params.auth,
+      rating: 100,
+      gameid: 0,
+      mana: 0
+    };
+    
+    send({result: 0});
+  },
+  create_game: function(params, send){
+    var id;
+    while(true){
+      id = Math.random();
+      if(id==0 || !games[id]){break;}
+    }
+    if(!params.players){send(1002); return;}
+    if(!params.name){send(1004); return;}
+    if(!params.turns){params.turns = 20;}
+    
+    if( users[ params.userid ].gameid > 0 ){
+      // TODO: this should check if the game is not started or the game is started and turnuntil < now() else send error 
+      //games[users[ params.userid ].gameid] = undefined;
+    }
+    
+    games[id] = {
+      id: id,
+      creator: params.userid,
+      players: [params.userid],
+      maxplayers: params.players,
+      turn: 0,
+      turnuntil: 0,
+      name: params.name,
+      started: false,
+      magictime: false,
+      questions: [],
+      answers: []
+    };
+    
+    users[ params.userid ].gameid = id;
+    
+    var set = get_game_set(params.turns, 4); 
+    for (var i = 0; i < params.turns ;i++){
+      games[id].answers.push([set[i].lang, set[i].answers]);
+      games[id].questions.push(get_snippet(set[i].lang, set[i].id));
+    }
+    
+    //send({result:0});
+    send({result:0, game: games[id]});
   },
   
   options: {
@@ -95,17 +173,31 @@ var server = {
   errors:{
     1000: "'lang' is required",
     1001: "'id' is required",
+    1002: "'players' is required",
+    1003: "'auth' is required",
+    1004: "'name' is required",
     
+    
+    2000: "Authentication failed. Access denied.",
     
     4000: "Method not found.",
     5000: "Inernal server error."
   },
   map: {
-    "/games": "list_games",
-    "/incr": "increment",
-    "/snippet": "get_snippet",
-    "/login": "login"
+    "/games": ["list_games", false],
+    "/snippet": ["get_snippet", false],
+    "/login": ["login", false],
+    "/creategame": ["create_game", true]
     
+  },
+  check_auth: function(auth){
+    for (var k in users){
+      console.log(users[k].auth == auth);
+      if(users[k].auth == auth){
+        return users[k].id;
+      }
+    }
+    return false;
   },
   instance: function(request, response){
     var me = {
@@ -140,12 +232,26 @@ var server = {
           params[sparts[0]] = decodeURIComponent(sparts[1]);
         }
         
-        var result = server[ server.map[method ] ] ( params );
-        if(!result || typeof result == "number" ){
-          me.send_error(result);
-        }else{
-          me.send_resp(result);
+        var mapped = server.map[method];
+        if(mapped[1]){
+          if(!params.auth){
+            me.send_error(2000);
+            return;
+          }
+          params.userid = server.check_auth(params.auth);
+          if(!params.userid){
+            me.send_error(2000);
+            return;
+          }
         }
+        
+        server[mapped[0]] (params, function(result){
+          if(!result || typeof result == "number" ){
+            me.send_error(result);
+          }else{
+            me.send_resp(result);
+          }
+        });
       }
     };
     me.init(request, response);
@@ -161,8 +267,12 @@ var init = function(){
       for (var k in ret){
         langs[k].data = ret[k];
       }
-      console.log(get_game_set(3, 4));
-      get_json('games', function(ret){
+      get_json('users', function(ret){
+        
+        http.createServer(function(request,response){ 
+          console.log(request.url);
+          server.instance(request, response);
+        }).listen(server.options.port, server.options.host);      
 
         
         console.log(ret);
@@ -170,13 +280,6 @@ var init = function(){
 
       // GET USERS
       // GET GAMES
-      // START SERVER
-      
-      http.createServer(function(request,response){ 
-        console.log(request.url);
-        server.instance(request, response);
-      }).listen(server.options.port, server.options.host);      
-
     });
   });
 };
