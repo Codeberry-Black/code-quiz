@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="css/code-styles.css"/>
     <link rel="stylesheet" href="css/reset.css"/>
     <link rel="stylesheet" href="css/style.css"/>
+    <script src="kendo/js/jquery.min.js"></script>
+    <script src="kendo/js/kendo.web.min.js"></script>
+    <script src="scripts/libs/bootstrap.min.js"></script>
+    <script src="scripts/libs/prettify.js"></script>
+    <script src="scripts/app/main.js"></script>
+    <script src="scripts/app/gamesViewModel.js"></script>
 </head>
 <body>
 <main>
@@ -42,50 +48,11 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
+    <input type="button" value="Create game" class="btn btn-success" id="button-create" style="margin: 0 auto; display: block;" >
     <section data-role="layout" data-id="default">
         <!--View content will render here-->
         <div class="rooms-container">
-        <div id="waiting-room">
-            <div class="room">
-                <h3 class="h3">Sample room</h3>
-                <ul>
-                    <li><strong>Host:</strong> Arnold</li>
-                    <li class="players-li"><strong>Players:</strong> 4</li>
-                    <li><strong>Max Players:</strong> 5</li>
-                </ul>
-                <br/>
-                <input type="button" value="Join" class="btn btn-success"/>
-            </div>
-            <div class="room">
-                <h3 class="h3">Sample room</h3>
-                <ul>
-                    <li><strong>Host:</strong> Arnold</li>
-                    <li class="players-li"><strong>Players:</strong> 4</li>
-                    <li><strong>Max Players:</strong> 5</li>
-                </ul>
-                <br/>
-                <input type="button" value="Join" class="btn btn-success"/>
-            </div>
-            <div class="room">
-                <h3 class="h3">Sample room</h3>
-                <ul>
-                    <li><strong>Host:</strong> Arnold</li>
-                    <li class="players-li"><strong>Players:</strong> 4</li>
-                    <li><strong>Max Players:</strong> 5</li>
-                </ul>
-                <br/>
-                <input type="button" value="Join" class="btn btn-success"/>
-            </div>
-            <div class="room">
-                <h3 class="h3">Sample room</h3>
-                <ul>
-                    <li><strong>Host:</strong> Arnold</li>
-                    <li class="players-li"><strong>Players:</strong> 4</li>
-                    <li><strong>Max Players:</strong> 5</li>
-                </ul>
-                <br/>
-                <input type="button" value="Join" class="btn btn-success"/>
-            </div>
+        <div id="game-list">
         </div>
         </div>
     </section>
@@ -97,29 +64,19 @@
         </div>
     </footer>
 </main>
-<script>
-    window.fbAsyncInit = function() {
-        FB.init({
-            appId      : '733423956732622',
-            xfbml      : true,
-            version    : 'v2.2'
-        });
-    };
-
-    (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+<script type="text/x-kendo-template" id="game-list-template">
+    <div class="room">
+        <h3 class="h3">#: name #</h3>
+        <ul>
+            <li><strong>Host:</strong> #: creator #</li>
+            <li class="players-li"><strong>Players:</strong> #: playersCount #</li>
+            <li><strong>Max Players:</strong> #: maxplayers #</li>
+        </ul>
+        <br/>
+        <input type="button" value="Join" class="btn btn-success" rel="#: rel #"/>
+    </div>
 </script>
-<script src="kendo/js/jquery.min.js"></script>
-<script src="kendo/js/kendo.web.min.js"></script>
-<script src="scripts/app/main.js"></script>
-<script src="scripts/libs/bootstrap.min.js"></script>
-<script src="scripts/libs/prettify.js"></script>
-<script src="scripts/app/login.js"></script>
+
 <script>
     $(function(){
         var view=$('pre').attr('class', 'prettyprint linenums');

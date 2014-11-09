@@ -116,7 +116,14 @@ var score_game_given_answers = function(gameid){
   
 };
 
-
+var send_question = function(params){
+	var given = {};
+	if(!games[params.id]){send(2002); return;}
+	if(!params.id){send(1001); return;}
+	if(ts() > game.turnuntil){send(2006); return;};
+	
+	games[params.id].given[params.userid] = {answer: params.answer, time = game.turnuntil - game.ts()};
+};
 
 var get_game_current_answer = function(gameid){
   if(!games[gameid]){return false;}

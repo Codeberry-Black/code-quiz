@@ -1,17 +1,16 @@
 var gamesModel = (function () {
     var gameModel = {
-        gameid: 'Id',
+        gameid: 0,
         fields: {
-            Text: {
+            name: {
                 field: 'Text',
                 defaultValue: ''
             },
-            UserId: {
-                field: 'UserId',
-                defaultValue: ''
+            hostId: {
+                field: 0
             },
-            JoinedUsers: {
-                field: 'JoinedUsers',
+            joinedUsers: {
+                field: ['JoinedUsers'],
                 defaultValue: []
             }
         }
@@ -22,21 +21,15 @@ var gamesModel = (function () {
         },
         change: function (e) {
             if (e.items && e.items.length > 0) {
-                $('#no-activities-span').hide();
+                $('#no-games-span').hide();
             }
             else {
-                $('#no-activities-span').show();
+                $('#no-games-span').show();
             }
-        },
-        sort: { field: 'ScheduleDate', dir: 'desc' },
-        filterable: {
-            field: "Text",
-            operator: "startswith"
-        },
-        serverFiltering: true
+        }
     });
 
     return {
-        activities: activitiesDataSource
+        games: gamesDataSource
     };
 }());
