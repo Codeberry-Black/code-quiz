@@ -1,20 +1,25 @@
 var gamesViewModel = (function () {
-    var gameSelected = function (e) {
-        app.mobileApp.navigate('views/gameView.html?uid=' + e.data.uid);
-    };
-    var navigateHome = function () {
-        app.mobileApp.navigate('#welcome');
-    };
-    var logout = function () {
-        app.AppHelper.logout()
-            .then(navigateHome, function (err) {
-                app.showError(err.message);
-                navigateHome();
-            });
-    };
+    app.apiCall("games",{},function(data){
+        var games = data.games;
+        var gameList = $('#game-list');
+        for(var k in games)
+        {
+            console.log(k , games[k]);
+            var game= games[k];
+            var gameTemplate = kendo.template($('#game-list-template').html());
+            gameList.append(gameTemplate({
+                rel: game.id,
+                name: game.name,
+                creator:game.creator,
+                playersCount:game.players.length,
+                maxplayers:game.maxplayers
+            }));
+        };
 
-    return {
-        gameSelected: gameSelected,
-        logout: logout
-    };
+        $('#game-list input').on('click', function(){
+
+            alert($(this).attr('rel'))
+        })
+
+    });
 }());
