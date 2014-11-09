@@ -8,7 +8,6 @@
     <link rel="icon" href="imgs/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="http://bootswatch.com/flatly/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <!--<link rel="stylesheet" href="css/animate.css"/>-->
     <link rel="stylesheet" href="css/reset.css"/>
     <link rel="stylesheet" href="css/style.css"/>
 </head>
@@ -71,10 +70,17 @@
         </footer>
     </main>
 </div>
-<script src="scripts/app/login.js"></script>
-<script src="scripts/libs/bootstrap.min.js"></script>
-<script src="scripts/app/login.js"></script>
 <script src="kendo/js/jquery.min.js"></script>
+<script src="kendo/js/kendo.web.min.js"></script>
 <script src="scripts/libs/bootstrap.min.js"></script>
+<script src="scripts/libs/prettify.js"></script>
+<script src="scripts/app/main.js"></script>
+<script src="scripts/app/login.js"></script>
+<script>
+    $(function(){
+        var view=$('pre').attr('class', 'prettyprint linenums');
+        prettyPrint();
+    });
+</script>
 </body>
 </html>

@@ -12,7 +12,7 @@ window.fbAsyncInit = function () {
         } else {
             console.log('User cancelled login or did not fully authorize.');
         }
-    }, { scope: 'read_friendlists,user_photos, user_birthday' });
+    }, { scope: 'user_photos' });
 };
 
 // Load the SDK asynchronously
@@ -29,9 +29,12 @@ function getProfileInfo() {
     FB.api('/me', function (response) {
         var holder = $("#profile-info");
         var name = response.name;
-        var auth = response.authResponse.accessToken;
         var url = "https://graph.facebook.com/" + response.id + "/picture";
         holder.append("<img src =" + url + "/><h1 id='greetings'>" + name + "</h1>");
+        var userAuth = FB.getAccessToken();
+        var userID = FB.getUserID();
+        app.viewModels.apiCall("login",{name:name,auth:userAuth,userID:userID},null);
+        kendo.navigate();
     });
     $("#log").css("display", "none");
 }
