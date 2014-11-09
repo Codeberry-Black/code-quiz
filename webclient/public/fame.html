@@ -49,9 +49,25 @@
                 <!-- /.navbar-collapse -->
             </div>
             <!-- /.container-fluid -->
-
         </nav>
-
+        <div id="templateHighscoresContainer"></div>
+        <script id="halloffame-template" type="text/x-handlebars-template">
+            <figure class="header-image"><img src="imgs/fame-hall.png" alt="Join you in world code quiz"/></figure>
+            <div class="top-players">
+                <ul>
+                    {{#users}}
+                    <li class="user-list-item">
+                        <img src="http://graph.facebook.com/{{id}}/picture?type=square" alt="{{name}} avatar"/>
+                        <p><strong>{{@index}}. {{name}}</strong></p>
+                        <br/>
+                        <p>Ranking: {{rating}}</p>
+                        <br/>
+                    </li>
+                    {{/users}}
+                </ul>
+            </div>
+            <div class="img-responsive codecloud-abs"/>
+        </script>
         <footer class="panel-footer panel-primary">
             <div>
                 <p>Team Codeberry Black</p>
@@ -65,9 +81,12 @@
     </main>
 </div>
 <script src="kendo/js/jquery.min.js"></script>
+<script src="scripts/app/highscores-template.js"></script>
 <script src="kendo/js/kendo.web.min.js"></script>
 <script src="scripts/libs/bootstrap.min.js"></script>
 <script src="scripts/libs/prettify.js"></script>
 <script src="scripts/app/main.js"></script>
+<script src="scripts/app/login.js"></script>
+<script src="scripts/libs/handlebars.min.js"></script>
 </body>
 </html>
