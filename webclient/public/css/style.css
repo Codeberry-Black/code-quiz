@@ -55,9 +55,10 @@ nav > ul > li{
     margin-top: -200px;
 }
 
-.welcome-about{
+.welcome-about >p{
     padding: 5px;
     border-right: 10px;
+    line-height: 1.4em;
 }
 
 .header-image > img{
