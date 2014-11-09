@@ -10,8 +10,7 @@ var langs = {},
 
 var ts = function(){
   var hrTime = process.hrtime();
-  console.log(hrTime[0] * 1000000 + hrTime[1] / 1000)
-  return 0;
+  return hrTime[0] * 1000000 + hrTime[1] / 1000;
 };
 
 var get_snippet = function(lang, id){
@@ -71,6 +70,8 @@ var get_game_set = function(count, ansCount){
 };
 
 var dt = 100;
+var knockdt = 2000;
+
 var server = {
   list_languages: function(params, send){
     var result = [];
@@ -192,7 +193,7 @@ var server = {
       maxplayers: params.players,
       turn: 0,
       turnuntil: 0,
-      playerknocks: {},      
+      knocks: {},      
       name: params.name,
       started: false,
       magictime: false,
@@ -213,8 +214,45 @@ var server = {
   join_game: function(params, send){
     // so ... this is the knock - knock thing ...
     
+    if(!params.id){send(1001); return;}
+    if(!games[params.gameid]){send(2002); return;}
     
-    ts();
+    var T = ts();
+    var game;
+    if(users[params.userid].gameid && users[params.userid].gameid !== params.id){
+      if(!games[users[params.userid].gameid] ){
+        users[params.userid].gameid = 0;
+      }else{
+        game = games[users[params.userid].gameid];
+        if(game.started){
+          if(game.turnuntil > T){
+            send(2001);
+            return;
+          }else{
+            delete games[users[params.userid].gameid];
+          }
+        }
+      }
+    }
+    
+    game = games[params.gameid];
+    // do we have a user that did not knocked ...
+    
+    for (var k in game.players){
+      if( ! game.knocks[ game.players[k] ] )
+      
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     send({result: 0});
   },
@@ -239,6 +277,10 @@ var server = {
     
     
     2000: "Authentication failed. Access denied.",
+    2001: "You are already in a game.",
+    2002: "Game not found.",
+    2003: "The game is already full.",
+    2004: "Game already started.",
     
     4000: "Method not found.",
     5000: "Inernal server error."
@@ -266,7 +308,11 @@ var server = {
   instance: function(request, response){
     var me = {
       send_resp: function(data){
-        me.response.writeHeader(200, {"Content-Type": "application/json"});  
+        me.response.writeHeader(200, {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+        });
         response.write(JSON.stringify(data));  
         response.end();
       },
