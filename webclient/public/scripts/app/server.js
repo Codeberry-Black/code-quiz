@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var gameRooms;
 
 app.use(express.static('../../../public'));
 app.engine('html', require('ejs').renderFile);
@@ -22,6 +23,11 @@ app.get('/languages', function  (req, res) {
 
 app.get('/feedback', function  (req, res) {
     res.renderFile('feedback.html');
+});
+
+app.get('/games', function  (req, res) {
+    games = JSON.parse(res);
+    res.send(gameRooms);
 });
 
 app.listen(8000);

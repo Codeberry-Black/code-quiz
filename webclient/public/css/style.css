@@ -24,6 +24,13 @@ nav > ul > li{
     width: 50px;
     display: inline;
 }
+
+#profile-info{
+    display: inline-block;
+    margin-top: 15px;
+    margin-left: 10px;
+}
+
 /*Index html styles */
 
 .welcome-text{
@@ -34,6 +41,11 @@ nav > ul > li{
     background-size: 120%;
     background-position: center;
     height: 500px;
+}
+
+.codecloud{
+    background: url('../imgs/codecloud.png');
+    height: 250px;
 }
 
 .welcome-about{
