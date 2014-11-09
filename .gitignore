@@ -17,13 +17,9 @@ bower_components
 node_modules
 kendo
 snippets
+bootstrap
+data
 
 #Libraries and frameworks
 bootstrap.min.css
 *.min.js
-/webclient/public/bootstrap/css/bootstrap-responsive.css
-/webclient/public/bootstrap/css/bootstrap-responsive.min.css
-/webclient/public/bootstrap/css/bootstrap.css
-/webclient/public/bootstrap/img/glyphicons-halflings-white.png
-/webclient/public/bootstrap/img/glyphicons-halflings.png
-/webclient/public/bootstrap/js/bootstrap.js

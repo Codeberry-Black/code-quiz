@@ -8,6 +8,7 @@ body{
 
 main{
     background-color: #ffffff;
+    position: relative;
     max-width: 780px;
     margin: 0 auto;
     font: 16px;
@@ -172,4 +173,18 @@ footer{
 .user-list-item > img{
     float: left;
     margin: 0 15px;
+}
+
+.battle-text {
+    text-align: left;
+}
+
+.challenges{
+    margin: 0 auto;
+    width: 90%;
+}
+
+#button-create{
+    float: right;
+    margin: 0;
 }
