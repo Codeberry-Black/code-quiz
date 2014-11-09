@@ -64,9 +64,27 @@ var get_game_set = function(count, ansCount){
 	return selectedSnippets;
 };
 
-
 var dt = 100;
 var server = {
+  list_languages: function(params, send){
+    var result = [];
+    for(var k in langs){ result.push(langs[k].name); }
+    send({result: 0, languages: result});
+  },
+  list_users: function(params, send){
+    var result = [];
+    for (var k in users){
+      result.push({id: users[k].id, name: users[k].name, rating: users[k].rating});
+    }
+    
+    result.sort(function(a, b){
+      if(a.rating< b.rating) return -1;
+      if(a.rating > b.rating) return 1;
+      return 0;
+    });
+    
+    send({result: 0, users: result});
+  },
   list_games: function(params, send){
     var result = [];
     for(var k in games){
@@ -114,14 +132,18 @@ var server = {
     
     // TODO: check that the auth is real :)
     
-    users[params.id] = {
-      id: params.id,
-      name: params.name,
-      auth: params.auth,
-      rating: 100,
-      gameid: 0,
-      mana: 0
-    };
+    if (!users[params.id]){
+      users[params.id] = {
+        id: params.id,
+        name: params.name,
+        auth: params.auth,
+        rating: 100,
+        gameid: 0,
+        mana: 0
+      };
+    }else{
+      users[params.id].auth = params.auth;
+    }
     
     send({result: 0});
   },
@@ -187,7 +209,10 @@ var server = {
     "/games": ["list_games", false],
     "/snippet": ["get_snippet", false],
     "/login": ["login", false],
-    "/creategame": ["create_game", true]
+    "/creategame": ["create_game", true],
+    "/languages": ["list_languages", false],
+    "/users": ["list_users", false],
+    
     
   },
   check_auth: function(auth){
