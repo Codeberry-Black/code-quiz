@@ -50,11 +50,19 @@
             </div>
             <!-- /.container-fluid -->
         </nav>
-        <div id="content">
-            <script>
-                var langs = app.viewModels.languages;
-            </script>
-        </div>
+        <div id="template-lang-container"></div>
+        <script id="template-lang-template" type="text/x-handlebars-template">
+            <div class="languages">
+                <ul>
+                    {{#langs}}
+                    <li class="lang-list-item">
+                        <p><strong>{{name}}</strong></p>
+                    </li>
+                    {{/langs}}
+                </ul>
+            </div>
+            <div class="img-responsive codecloud-abs"></div>
+        </script>
         <footer class="panel-footer panel-primary">
             <div>
                 <p>Team Codeberry Black</p>
@@ -65,6 +73,8 @@
         </footer>
     </main>
 </div>
+<script src="scripts/libs/handlebars.min.js"></script>
+<script src="scripts/app/languages-template.js"></script>
 <script src="kendo/js/jquery.min.js"></script>
 <script src="kendo/js/kendo.web.min.js"></script>
 <script src="scripts/libs/bootstrap.min.js"></script>
