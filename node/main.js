@@ -80,8 +80,45 @@ var get_game_set = function(count, ansCount){
 	return selectedSnippets;
 };
 
+var get_game_current_question = function(gameid){
+  if(!games[gameid]){return false;}
+  var game = games[gameid];
+  if(!game){return false;}
+  if(game.turn >= games[gameid].questions.length){ return false; }
+  
+  var data = {
+    question: game.questions[game.turn],
+    answers: game.answers[game.turn][1]
+  };
+};
+
+var get_game_current_answer = function(gameid){
+  if(!games[gameid]){return false;}
+  var game = games[gameid];
+  if(!game){return false;}
+  if(game.turn >= games[gameid].questions.length){ return false; }
+  
+  return game.answers[game.turn][0];  
+};
+
+var get_userdatas = function(userids){
+  var result = [];
+  for (var k in userids){
+    result.push({id: users[k].id, name: users[k].name, rating: users[k].rating});
+  }
+
+  result.sort(function(a, b){
+    if(a.rating > b.rating) return -1;
+    if(a.rating < b.rating) return 1;
+    return 0;
+  });
+
+  return result;
+};
+
 var dt = 100;
-var knockdt = 2000;
+
+var knockdt = 3000000;
 
 var server = {
   list_languages: function(params, send){
@@ -97,18 +134,8 @@ var server = {
     send({result: 0, languages: result, counts: {languages: langcnt, snippets: snippetscnt}});
   },
   list_users: function(params, send){
-    var result = [];
-    for (var k in users){
-      result.push({id: users[k].id, name: users[k].name, rating: users[k].rating});
-    }
-    
-    result.sort(function(a, b){
-      if(a.rating > b.rating) return -1;
-      if(a.rating < b.rating) return 1;
-      return 0;
-    });
-    
-    send({result: 0, users: result});
+    var result = get_userdatas(Object.keys(users));
+    send({result: 0, users:result});
   },
   list_games: function(params, send){
     var result = [];
@@ -225,13 +252,13 @@ var server = {
       games[id].questions.push(get_snippet(set[i].lang, set[i].id));
     }
     
-    send({result:0, game: games[id]});
+    send({result:0, game: id});
   },
   join_game: function(params, send){
     // so ... this is the knock - knock thing ...
     
     if(!params.id){send(1001); return;}
-    if(!games[params.gameid]){send(2002); return;}
+    if(!games[params.id]){send(2002); return;}
     
     var T = ts();
     var game;
@@ -251,16 +278,67 @@ var server = {
       }
     }
     
-    game = games[params.gameid];
-    // do we have a user that did not knocked ...
+    if( games[[params.id]].started){
+      send(2004);
+      return;
+    }
+    
+    game = games[params.id];
+    
+    if(!game.knocks){
+      send(2007);
+      return;
+    }
+    
+    var cnt = 0, hostleft = false, knocked  = [], meknocked = false;
+    for(var k in game.players){
+      var playerid = game.players[k];
+      if( game.knocks[playerid] ){
+        if(playerid === params.userid){meknocked = true;}
+        if(game.knocks[playerid] < T - knockdt){
+          users[playerid].gameid = 0;
+          if(playerid === game.creator){
+            hostleft = true;
+          }
+          if(playerid === params.userid){
+            send(2006);
+            return;
+          }
+        }else{
+          cnt ++;
+          knocked.push(game.players[k]);
+        } 
+      }
+    }
+    if( !meknocked ){
+      knocked.push(params.userid);
+      cnt ++;
+    }
     
     
+    if(cnt > game.maxplayers){
+      send(2003);
+      return;
+    }
     
+    if(hostleft){
+      delete games[params.id];
+      send_error(2005);
+      return;
+    }
     
+    games[params.id].players = knocked;
+    games[params.id].knocks[ params.userid ] = T;
     
-    send({result: 0});
+    var players = get_userdatas(knocked);
+    var question = get_game_current_question(game.id);
+    
+    send({result: 0, started: game.started, players: players, question: question});
   },
   start_game: function(params, send){
+    if(!params.id){send(1001); return;}
+    if(!games[params.id]){send(2002); return;}
+    if(!games[params.id]){send(2002); return;}
     
     
   },
@@ -285,6 +363,9 @@ var server = {
     2002: "Game not found.",
     2003: "The game is already full.",
     2004: "Game already started.",
+    2005: "The host left the game.",
+    2006: "You have too slow connection for this game.",
+    2007: "This is a demo game.",
     
     4000: "Method not found.",
     5000: "Inernal server error."
@@ -304,6 +385,7 @@ var server = {
     for (var k in users){
       //console.log(users[k].auth == auth);
       if(users[k].auth == auth){
+        if( k != users[k].id) {return false;}
         return users[k].id;
       }
     }
