@@ -13,6 +13,8 @@ var app = (function () {
     router.route("/games(/:category)(/:id)", function(category, id) {
         console.log(category, "item with", id, " was requested");
     });
+
+    router.start();
         
     var joinGame = function() {
         //var userId = activity.get('UserId');
@@ -60,7 +62,7 @@ var app = (function () {
     }());
 
     var apiCall = function (method, params, cb) {
-        $.getJSON('localhost:' + port, params, function(result){
+        $.getJSON('http://localhost:' + port+'/'+method, params, function(result){
             if(result.result !== 0){
                 console.assert(result, 'Stupid error message');
             } else {
@@ -83,10 +85,8 @@ var app = (function () {
     return {
         viewModels: {
             login: loginViewModel
-
         },
-        mobileApp: mobileApp,
-        joinToGame: joinToGame,
-        apiCall: apiCall
+        apiCall: apiCall,
+        router: router
     };
 }());
