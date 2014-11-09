@@ -1,4 +1,9 @@
 var gamesViewModel = (function () {
+    /*var router = new kendo.Router();
+    router.route("../play.html/:id", function(id) {
+        alert("navigated to game ", id, " was requested");
+    });
+    router.start();*/
     app.apiCall("games",{},function(data){
         var games = data.games;
         var gameList = $('#game-list');
@@ -17,8 +22,10 @@ var gamesViewModel = (function () {
         };
 
         $('#game-list input').on('click', function(){
-
-            alert($(this).attr('rel'))
+            window.location = 'play.html#' + $(this).attr('rel') ;
+            /*router.navigate($(this).attr('rel'));
+            *//*alert($(this).attr('rel'))*//*
+            router.start();*/
         })
 
     });
