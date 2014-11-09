@@ -17,6 +17,7 @@
     <script src="scripts/libs/jquery.cookie.js"></script>
     <script src="scripts/app/main.js"></script>
     <script src="scripts/app/play.js"></script>
+    <script src="scripts/libs/prettify.js"></script>
 </head>
 <body>
 <main>
@@ -49,15 +50,54 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-    <section data-role="layout" data-id="default">
+    <div class="well page-heading">
+      <input type="button" value="Start game" class="btn btn-success" id="button-start">
+      <h4 class="h4 battle-text">Create a room for game or join to play!</h4>
+    </div>
+  
+    <section data-role="layout" data-id="default" id="users-list">
         <!--View content will render here-->
         <div class="snippet-container">
         </div>
         <div>
-            <ul class="users-list">
-            </ul>
+            <div class="top-players" id="players">
+                <ul >
+                </ul>
+            </div>
         </div>
     </section>
+  
+  
+  <article id="game" style="display: none;"  >
+          <br/>
+          <div class="panel panel-primary">
+              <div class="panel-heading">
+                  <span class="time-text">Time: </span>
+                  <div class="progress progress-striped active time" >
+                      <span class="progress-bar" id="remaining-time"></span>
+                  </div>
+              </div>
+              <div id="code-here">
+                  <br/>
+                  <div id="question"></div>
+                  <br/>
+                  <div id="answers-container">
+                      <div id="possible-answers" class="navbar-collapse collapse">
+                          <ul class="navbar-nav">
+                              <li><a href="#" class="btn btn-default" id="answer1"></a></li>
+                              <li><a href="#" class="btn btn-default" id="answer2"></a></li>
+                              <li><a href="#" class="btn btn-default" id="answer3"></a></li>
+                              <li><a href="#" class="btn btn-default" id="answer4"></a></li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <span class="icon-magic"></span>
+          <br/>
+          </article>
+  
+  
     <footer class="panel-footer panel-primary">
         <div>
             <p>Team Codeberry Black</p>
@@ -67,20 +107,16 @@
     </footer>
 </main>
 <script type="text/x-kendo-template" id="snippet-template">
-    <div class="snippet-view">
-        #: snippet #
-    </div>
+    <div id="snippet-view"></div>
 </script>
 <script type="text/x-kendo-template" id="users-template">
-    <li>#: points #</li>
-    <li>#: playerName #</li>
-</script>
-
-<script>
-    $(function(){
-        var view=$('pre').attr('class', 'prettyprint linenums');
-        prettyPrint();
-    });
+      <li class="user-list-item">
+          <img src="http://graph.facebook.com/#: id #/picture?type=square">
+          <p><strong>#: name #</strong></p>
+          <br>
+          <p>Ranking: #: rating #</p>
+          <br>
+      </li>
 </script>
 </body>
 </html>

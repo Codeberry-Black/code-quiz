@@ -96,7 +96,7 @@ var reset_game_given_answers = function(gameid){
   if(!games[gameid]){return;}
   
   var given = {};
-  for( var i=0; i < games[gameid].players ;i++ ){
+  for( var i=0; i < games[gameid].players.length ;i++ ){
     given[games[gameid].players ] = {answer: '', time: 0};
   }
   
@@ -141,7 +141,7 @@ var get_userdatas = function(userids){
 
 var dt = 100;
 
-var knockdt = 3000;
+var knockdt = 5000;
 var answertime = 10000;
 var magictime = 5000;
 
@@ -284,8 +284,8 @@ var server = {
         game = games[users[params.userid].gameid];
         if(game.started){
           if(game.turnuntil > T){
-            send(2001);
-            return;
+            //send(2001);
+            //return;
           }else{
             //delete games[users[params.userid].gameid];
           }
@@ -382,7 +382,6 @@ var server = {
     
     setTimeout(function(){
       // here is a little complex ...
-      // is game over ...
       
       var t = ts();
       var isover = false;
@@ -392,21 +391,30 @@ var server = {
         games[params.id].turns = games[params.id].turns + 1;  
       }
       
+      if( games[params.id].turns === games[params.id].questions.length ){
+        isover = true;
+      }
+      
       if(isover){
         
+        // lvar player 
+        
+        
+        // HERE WE GET USERS ... 
+        
       }else{
-        var mana = games[params.id].given[params.userid];
-        
-        
-        
-        
-        
+        var resp = {
+          result: 0,
+          isfinal: false,
+          mana: games[params.id].given[params.userid].mana,
+          question: get_game_current_question(params.id)
+        };
       }
       
       // check players answers
       // send next answer
       
-      send({result: 0});
+      send(resp);
     }, game.turnuntil - ts());
   },
   options: {

@@ -19,20 +19,30 @@ var gamesViewModel = (function () {
                 maxplayers:game.maxplayers
             }));
         };
-
+        
+        
+        
+        
         $('#game-list input').on('click', function(){
-            window.location = 'play.html#' + $(this).attr('rel') ;
-            /*router.navigate($(this).attr('rel'));
+             /*router.navigate($(this).attr('rel'));
             *//*alert($(this).attr('rel'))*//*
             router.start();*/
+          
+            var id =$(this).attr('rel') ;
+            setTimeout(function(){
+              window.location = 'play.html#' + id;
+            }, 0 );
+
         });
 
         $('#button-create').on('click', function(){
-            alert('aaaaaaaaaaa')
             app.apiCall("creategame",{
                 players:4,
                 name:'HackFMI '+ games.length,
-                turns:10},function(data){
+                turns:10},function(ret){
+                setTimeout(function(){
+                  window.location = 'play.html#' + ret.game;
+                }, 0 );    
             });
         });
     });
