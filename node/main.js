@@ -104,7 +104,11 @@ var get_game_current_answer = function(gameid){
 var get_userdatas = function(userids){
   var result = [];
   for (var k in userids){
-    result.push({id: users[k].id, name: users[k].name, rating: users[k].rating});
+    result.push({
+      id: users[userids[k]].id, 
+      name: users[userids[k]].name, 
+      rating: users[userids[k]].rating
+    });
   }
 
   result.sort(function(a, b){
