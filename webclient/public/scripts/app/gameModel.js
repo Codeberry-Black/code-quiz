@@ -1,5 +1,5 @@
 var gamesModel = [];
 
-var carDataSource = new kendo.data.DataSource({
+var gamesDataSource = new kendo.data.DataSource({
     data: gamesModel
 });

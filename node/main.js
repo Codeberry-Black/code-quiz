@@ -4,13 +4,16 @@ var fs = require('fs'),
     path = require('path'),
     http = require('http');
 
+
+var start_rating = 1000;
+
 var langs = {},
     games = {},
     users = {};
 
 var ts = function(){
   var hrTime = process.hrtime();
-  return hrTime[0] * 1000000 + hrTime[1] / 1000;
+  return (hrTime[0] * 1000000 + hrTime[1] / 1000) / 1000;
 };
 
 var get_snippet = function(lang, id){
@@ -23,6 +26,14 @@ var get_json = function(name, callback){
   fs.readFile(filePath, 'utf8', function (err, data) {
     if (err) {console.log(err);}
     data = JSON.parse(data);
+    callback(data);
+  });
+};
+
+var save_json = function(name, data, callback){
+  var filePath = path.normalize('../data/'+name+'.json');
+  fs.writeFile(filePath, JSON.stringify(data),{encoding: "utf8"}, function (err, data) {
+    if (err) {console.log(err);}
     callback(data);
   });
 };
@@ -69,8 +80,83 @@ var get_game_set = function(count, ansCount){
 	return selectedSnippets;
 };
 
+var get_game_current_question = function(gameid){
+  if(!games[gameid]){return false;}
+  var game = games[gameid];
+  if(!game.started){return false;}
+  if(game.turn >= games[gameid].questions.length){ return false; }
+  
+  return {
+    question: game.questions[game.turn],
+    answers: game.answers[game.turn][1]
+  };
+};
+
+var reset_game_given_answers = function(gameid){
+  if(!games[gameid]){return;}
+  
+  var given = {};
+  for( var i=0; i < games[gameid].players ;i++ ){
+    given[games[gameid].players ] = {answer: '', time: 0};
+  }
+  
+  games[gameid].given = given;
+};
+
+var score_game_given_answers = function(gameid){
+  var ans = get_game_current_answer(gameid);
+  if( !ans ){ return false; }
+  /*
+  for(  ){
+    
+    
+  }
+  */
+  
+  
+};
+
+var send_question = function(params){
+	var given = {};
+	if(!games[params.id]){send(2002); return;}
+	if(!params.id){send(1001); return;}
+	if(ts() > game.turnuntil){send(2006); return;};
+	
+	games[params.id].given[params.userid] = {answer: params.answer, time = game.turnuntil - game.ts()};
+};
+
+var get_game_current_answer = function(gameid){
+  if(!games[gameid]){return false;}
+  var game = games[gameid];
+  if(!game){return false;}
+  if(game.turn >= game.questions.length){ return false; }
+  return game.answers[game.turn][0];  
+};
+
+var get_userdatas = function(userids){
+  var result = [];
+  for (var k in userids){
+    result.push({
+      id: users[userids[k]].id, 
+      name: users[userids[k]].name, 
+      rating: users[userids[k]].rating
+    });
+  }
+
+  result.sort(function(a, b){
+    if(a.rating > b.rating) return -1;
+    if(a.rating < b.rating) return 1;
+    return 0;
+  });
+
+  return result;
+};
+
 var dt = 100;
-var knockdt = 2000;
+
+var knockdt = 3000;
+var answertime = 10000;
+var magictime = 5000;
 
 var server = {
   list_languages: function(params, send){
@@ -86,18 +172,8 @@ var server = {
     send({result: 0, languages: result, counts: {languages: langcnt, snippets: snippetscnt}});
   },
   list_users: function(params, send){
-    var result = [];
-    for (var k in users){
-      result.push({id: users[k].id, name: users[k].name, rating: users[k].rating});
-    }
-    
-    result.sort(function(a, b){
-      if(a.rating > b.rating) return -1;
-      if(a.rating < b.rating) return 1;
-      return 0;
-    });
-    
-    send({result: 0, users: result});
+    var result = get_userdatas(Object.keys(users));
+    send({result: 0, users:result});
   },
   list_games: function(params, send){
     var result = [];
@@ -161,10 +237,15 @@ var server = {
         id: params.id,
         name: params.name,
         auth: params.auth,
-        rating: 100,
+        rating: start_rating,
         gameid: 0,
         mana: 0
       };
+      
+      save_json('users', users, function(){
+        send({result: 0});
+      });
+      return;
     }else{
       users[params.id].auth = params.auth;
     }
@@ -209,13 +290,13 @@ var server = {
       games[id].questions.push(get_snippet(set[i].lang, set[i].id));
     }
     
-    send({result:0, game: games[id]});
+    send({result:0, game: id});
   },
   join_game: function(params, send){
     // so ... this is the knock - knock thing ...
     
     if(!params.id){send(1001); return;}
-    if(!games[params.gameid]){send(2002); return;}
+    if(!games[params.id]){send(2002); return;}
     
     var T = ts();
     var game;
@@ -229,40 +310,110 @@ var server = {
             send(2001);
             return;
           }else{
-            delete games[users[params.userid].gameid];
+            //delete games[users[params.userid].gameid];
           }
         }
       }
     }
+   
     
-    game = games[params.gameid];
-    // do we have a user that did not knocked ...
+    /*
+    if(games[params.id].started){
+      send(2004);
+      return;
+    }
+    */
+   
+    game = games[params.id];
     
-    for (var k in game.players){
-      if( ! game.knocks[ game.players[k] ] )
-      
+    if(!game.knocks){
+      send(2007);
+      return;
+    }
+    
+    var cnt = 0, hostleft = false, knocked  = [], meknocked = false;
+    for(var k in game.players){
+      var playerid = game.players[k];
+      if( game.knocks[playerid] ){
+        if(playerid === params.userid){meknocked = true;}
+        if(game.knocks[playerid] < T - knockdt){
+          users[playerid].gameid = 0;
+          if(playerid === game.creator){
+            hostleft = true;
+          }
+          if(playerid === params.userid){
+            send(2006);
+            return;
+          }
+        }else{
+          cnt ++;
+          knocked.push(game.players[k]);
+        } 
+      }
+    }
+    if( !meknocked ){
+      knocked.push(params.userid);
+      cnt ++;
     }
     
     
+    if(cnt > game.maxplayers){
+      send(2003);
+      return;
+    }
     
+    if(hostleft){
+      delete games[params.id];
+      send_error(2005);
+      return;
+    }
     
+    games[params.id].players = knocked;
+    games[params.id].knocks[ params.userid ] = T;
     
+    var players = get_userdatas(knocked);
+    var question = get_game_current_question(game.id);
     
+    send({
+      result: 0, 
+      started: game.started, 
+      players: players, 
+      question: question,
+      name: game.name,
+      id: game.id,
+      maxplayers: game.maxplayers
+    });
+  },
+  start_game: function(params, send){
+    if(!params.id){send(1001); return;}
+    if(!games[params.id]){send(2002); return;}
+    if(games[params.id].creator !== params.userid ){send(2008); return;}
     
-    
-    
-    
-    
+    games[params.id].started = true;
+    games[params.id].turnuntil = ts() + answertime;
+    reset_game_given_answers( params.id );
     
     send({result: 0});
   },
-  start_game: function(params, send){
+  game_diff: function(params, send){
+    if(!params.id){send(1001); return;}
+    if(!games[params.id]){send(2002); return;}
+    var game = games[params.id];
+    if(!game.started){ send(2009); return;}
+    if(!game.knocks[params.userid]){ send(2010); return; }
     
-    
-  },
-  diff_game: function(params, send){
-    
-    
+    var t = ts();
+    setTimeout(function(){
+      // here is a little complex ...
+      // is game over ...
+      // 
+      // check players answers
+      // increase turns
+      // increase turnuntil
+      // send next answer
+      
+      send({result: 0});
+    }, game.turnuntil - t);
   },
   options: {
     hostname: 'localhost',
@@ -281,6 +432,14 @@ var server = {
     2002: "Game not found.",
     2003: "The game is already full.",
     2004: "Game already started.",
+    2005: "The host left the game.",
+    2006: "You have too slow connection for this game.",
+    2007: "This is a demo game.",
+    2008: "You are not the host of the game.",
+    2009: "Game is not started.",
+    2010: "You are not playing this game.",
+    
+    
     
     4000: "Method not found.",
     5000: "Inernal server error."
@@ -293,13 +452,15 @@ var server = {
     "/languages": ["list_languages", false],
     "/users": ["list_users", false],
     "/joingame": ["join_game", true],
-    
+    "/startgame": ["start_game", true],
+    "/turn": ["game_diff", true],
     
   },
   check_auth: function(auth){
     for (var k in users){
       //console.log(users[k].auth == auth);
       if(users[k].auth == auth){
+        if( k != users[k].id) {return false;}
         return users[k].id;
       }
     }
@@ -339,6 +500,7 @@ var server = {
           var sparts = parts[k].split('=');
           if(sparts[0] === ''){continue;}
           if(sparts.length == 1){ sparts[1] = ''; }
+          sparts[1] = sparts[1].split("+").join(" ");
           params[sparts[0]] = decodeURIComponent(sparts[1]);
         }
         

@@ -1,0 +1,20 @@
+<div data-role="view" id="games" data-layout="default" class="gamesView" data-show="gamesViewModel.show"
+     data-model="gamesViewModel">
+
+    <div id="status-container" class="user-status-wrp" data-role="listview" data-style="inset">
+        <div class="game-info">
+            <!--<img data-bind="attr:{src: activityViewModel.activity.User().PictureUrl}" alt="styles/images/avatar.png" />-->
+            <!--<h2 id="personName" data-bind="text: name"></h2>-->
+            <img id="user-avatar" alt="styles/images/avatar.png">
+            <h2 id="gameName"></h2>
+            <!--<time id="activityDate" data-bind="text: activity.ScheduleDateFormatted"></time>-->
+            <time id="activityDate"></time>
+            <span>10/6</span>
+        </div>
+        <!--<img id="picture" data-bind="attr:{src: PictureUrl()}" width="100%"/>-->
+        <div id="map-canvas"></div>
+        <div class="user-share">
+            <span id="activityText" data-bind="text: Text" class="user-share-txt"></span>
+        </div>
+    </div>
+</div>
