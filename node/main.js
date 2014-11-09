@@ -103,19 +103,6 @@ var reset_game_given_answers = function(gameid){
   games[gameid].given = given;
 };
 
-var score_game_given_answers = function(gameid){
-  var ans = get_game_current_answer(gameid);
-  if( !ans ){ return false; }
-  /*
-  for(  ){
-    
-    
-  }
-  */
-  
-  
-};
-
 var send_question = function(params){
 	var given = {};
 	if(!games[params.id]){send(2002); return;}
@@ -212,19 +199,6 @@ var server = {
     });
   },
   
-  wait: function(params, send){
-    i--;
-    console.log(i);
-    var f = function(){
-      if (i > 0){setTimeout(function(){f();}, dt);}
-      else{ send({result:0}); }
-    };
-    f();
-  },
-  wake: function(params, send){
-    i=0;
-    send({result:0});
-  },
   login: function(params, send){
     if( !params.id ){send(1001); return;}
     if( !params.name ){send(1004); return;}
@@ -255,12 +229,15 @@ var server = {
   create_game: function(params, send){
     var id;
     while(true){
-      id = Math.random();
-      if(id==0 || !games[id]){break;}
+      id=Math.floor(Math.random()*100000000);
+      if(!games[id]){break;}
     }
+    
     if(!params.players){send(1002); return;}
     if(!params.name){send(1004); return;}
     if(!params.turns){params.turns = 20;}
+    
+    params.turns = parseInt(params.turns, 10);
     
     if(users[ params.userid ].gameid > 0){
       // TODO: this should check if the game is not started or the game is started and turnuntil < now() else send error 
@@ -376,6 +353,7 @@ var server = {
     
     send({
       result: 0, 
+      ishost: params.userid === game.creator,
       started: game.started, 
       players: players, 
       question: question,
@@ -402,18 +380,34 @@ var server = {
     if(!game.started){ send(2009); return;}
     if(!game.knocks[params.userid]){ send(2010); return; }
     
-    var t = ts();
     setTimeout(function(){
       // here is a little complex ...
       // is game over ...
-      // 
+      
+      var t = ts();
+      var isover = false;
+      
+      if(t - game.turnuntil > answertime - 500){
+        games[params.id].turnuntil = games[params.id].turnuntil + answertime;
+        games[params.id].turns = games[params.id].turns + 1;  
+      }
+      
+      if(isover){
+        
+      }else{
+        var mana = games[params.id].given[params.userid];
+        
+        
+        
+        
+        
+      }
+      
       // check players answers
-      // increase turns
-      // increase turnuntil
       // send next answer
       
       send({result: 0});
-    }, game.turnuntil - t);
+    }, game.turnuntil - ts());
   },
   options: {
     hostname: 'localhost',

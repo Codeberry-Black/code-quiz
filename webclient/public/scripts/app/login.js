@@ -32,6 +32,10 @@ function getProfileInfo() {
         var url = "https://graph.facebook.com/" + response.id + "/picture";
         holder.append("<img src =" + url + "/><h1 id='greetings'>" + name + "</h1>");
         var userID = FB.getUserID();
+        $.cookie('name',name);
+        $.cookie('userID',userID);
+        var auth = FB.getAccessToken();
+        $.cookie('auth',auth);
         app.apiCall("login",{name:name,id:userID},function(){});
         /*app.router.route("game", function() {
             console.log("navigated to bar");

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Code Quiz</title>
+    <link rel="shortcut icon" href="imgs/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="imgs/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="http://bootswatch.com/flatly/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/code-styles.css"/>
+    <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <script src="kendo/js/jquery.min.js"></script>
+    <script src="kendo/js/kendo.web.min.js"></script>
+    <script src="scripts/libs/bootstrap.min.js"></script>
+    <script src="scripts/libs/prettify.js"></script>
+    <script src="scripts/libs/jquery.cookie.js"></script>
+    <script src="scripts/app/main.js"></script>
+    <script src="scripts/app/play.js"></script>
+</head>
+<body>
+<main>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid" id="navfluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand nav-logo" href="./index.html"><img src="imgs/plainlogo.png" alt="code quiz logo"/></a>
+            </div>
+            <div class="collapse navbar-collapse" id="navigationbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="game.html">Battle Play</a></li>
+                    <li><a href="fame.html">Hall Of Fame</a></li>
+                    <li><a href="languages.html">Languages</a></li>
+                    <li><a href="feedback.html">Feedback</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><div id="fb-root"></div>
+                        <fb:login-button id="profile-info" class="fb-login-button"
+                                         data-size="large" show-faces="false" width="200"
+                                         data-auto-logout-link="true" max-rows="1" id="log" >
+                        </fb:login-button>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <section data-role="layout" data-id="default">
+        <!--View content will render here-->
+        <div class="snippet-container">
+        </div>
+        <div>
+            <ul class="users-list">
+            </ul>
+        </div>
+    </section>
+    <footer class="panel-footer panel-primary">
+        <div>
+            <p>Team Codeberry Black</p>
+            <p class="text-left github"><a href="https://github.com/Codeberry-Black/code-quiz">Fork me on GitHub</a></p>
+            <p class="text-right"><a href="http://hakfmi.com">HackFMI</a></p>
+        </div>
+    </footer>
+</main>
+<script type="text/x-kendo-template" id="snippet-template">
+    <div class="snippet-view">
+        #: snippet #
+    </div>
+</script>
+<script type="text/x-kendo-template" id="users-template">
+    <li>#: points #</li>
+    <li>#: playerName #</li>
+</script>
+
+<script>
+    $(function(){
+        var view=$('pre').attr('class', 'prettyprint linenums');
+        prettyPrint();
+    });
+</script>
+</body>
+</html>
