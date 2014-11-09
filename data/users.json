@@ -1,0 +1,58 @@
+{
+   "7": {
+     "id": "67563683055",
+     "name": "Linus Torvalds",
+     "auth": "xxx",
+     "rating": 2000,
+     "gameid": 0,
+     "mana": 0
+   },
+   "1": {
+     "id": "67563683055",
+     "name": "Arnold",
+     "auth": "xxx",
+     "rating": 1000,
+     "gameid": 0,
+     "mana": 0
+   },
+   "2": {
+     "id": "67563683055",
+     "name": "Tiby",
+     "auth": "xxx",
+     "rating": 900,
+     "gameid": 0,
+     "mana": 0
+   },
+   "3": {
+     "id": "67563683055",
+     "name": "Harry",
+     "auth": "xxx",
+     "rating": 750,
+     "gameid": 0,
+     "mana": 0
+   },
+   "4": {
+     "id": "67563683055",
+     "name": "Antoni",
+     "auth": "xxx",
+     "rating": 500,
+     "gameid": 0,
+     "mana": 0
+   },
+   "5": {
+     "id": "67563683055",
+     "name": "Jessie",
+     "auth": "xxx",
+     "rating": 250,
+     "gameid": 0,
+     "mana": 0
+   },
+   "6": {
+     "id": "67563683055",
+     "name": "Jeremy",
+     "auth": "xxx",
+     "rating": 100,
+     "gameid": 0,
+     "mana": 0
+   }
+}
