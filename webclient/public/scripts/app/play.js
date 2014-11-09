@@ -11,8 +11,3 @@ var playViewModel = (function () {
     };
     f();
 }());
-
-
-
-$.cookie('auth','val');
-$.cookie('auth')

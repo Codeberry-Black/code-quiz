@@ -51,6 +51,7 @@ var app = (function () {
         {
             var auth = FB.getAccessToken();
             if(auth) params.auth = auth;
+            $.cookie('auth','auth');
         }
 
         $.getJSON('http://localhost:' + port+'/'+method, params, function(result){
