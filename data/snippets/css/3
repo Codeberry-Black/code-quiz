@@ -1,1 +1,5 @@
-&lt;div id="foo" unselectable="on" class="unselectable"&gt;...&lt;/div&gt;
+.ClassName:focus{
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+}

@@ -1,37 +1,5 @@
-&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
-&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
-&lt;head&gt;
-&lt;style&gt;
 #absdiv {
     position: absolute; 
     left: 100px; 
     top: 100px; 
-    width: 80%; 
-    height: 60%; 
-    background: #999;
 }
-
-#pctchild {
-    width: 60%; 
-    height: 40%; 
-    background: #CCC;
-}
-
-#reldiv {
-    position: relative;
-    left: 20px;
-    top: 20px;
-    height: 25px;
-    width: 40%;
-    background: red;
-}
-&lt;/style&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-    &lt;div id="absdiv"&gt;
-        &lt;div id="reldiv"&gt;&lt;/div&gt;
-        &lt;div id="pctchild"&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;

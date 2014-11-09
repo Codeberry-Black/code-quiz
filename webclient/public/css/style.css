@@ -189,3 +189,20 @@ footer{
     float: right;
     margin: 0;
 }
+
+.languages{
+   max-height: 700px;
+    margin: 0 auto;
+}
+
+.languages > ul > li{
+    display: inline-block;
+    min-width: 200px;
+    margin: 10px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+iframe{
+    min-height: 750px;
+}

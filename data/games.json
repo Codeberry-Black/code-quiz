@@ -2,15 +2,15 @@
   "1":{
       "creator": "7",
       "players": [7],
-      "maxplayers": 2,
-      "name": "Sample room",
+      "maxplayers": 7,
+      "name": "Musala Room",
       "id": 0
   },
   "0":{
       "creator": "1",
       "players": [1],
       "maxplayers": 4,
-      "name": "Sample room 2",
+      "name": "HackFMI4",
       "id": 1
   }
 }

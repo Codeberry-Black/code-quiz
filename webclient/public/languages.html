@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="css/animate.css"/>
     <link rel="stylesheet" href="css/reset.css"/>
     <link rel="stylesheet" href="css/style.css"/>
+    <script src="kendo/js/jquery.min.js"></script>
+    <script src="scripts/libs/jquery.awesomeCloud-0.2.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -50,19 +52,35 @@
             </div>
             <!-- /.container-fluid -->
         </nav>
-        <div id="template-lang-container"></div>
-        <script id="template-lang-template" type="text/x-handlebars-template">
-            <div class="languages">
-                <ul>
-                    {{#langs}}
-                    <li class="lang-list-item">
-                        <p><strong>{{name}}</strong></p>
-                    </li>
-                    {{/langs}}
-                </ul>
-            </div>
-            <div class="img-responsive codecloud-abs"></div>
-        </script>
+        <iframe src="http://en.wikipedia.org/wiki/List_of_programming_languages" frameborder="0" width="100%"></iframe>
+        <!--<div id="template-lang-container"></div>-->
+        <!--<script id="template-lang-template" type="text/x-handlebars-template">-->
+            <!--<div class="languages">-->
+            <!--<ul>   {{#langs}}-->
+                    <!--<li>{{name}}</li>-->
+                    <!--{{/langs}}-->
+                <!--</ul>-->
+            <!--</div>-->
+            <!--<div class="img-responsive codecloud-abs"></div>-->
+        <!--</script>-->
+        <!--<script>-->
+            <!--$(document).ready(function(){-->
+                <!--$("#wordcloud1").awesomeCloud({-->
+                    <!--"size" : {-->
+                        <!--"grid" : 16,-->
+                        <!--"normalize" : false-->
+                    <!--},-->
+                    <!--"options" : {-->
+                        <!--"color" : "random-dark",-->
+                        <!--"rotationRatio" : 0.35,-->
+                        <!--"printMultiplier" : 3,-->
+                        <!--"sort" : "random"-->
+                    <!--},-->
+                    <!--"font" : "'Times New Roman', Times, serif",-->
+                    <!--"shape" : "square"-->
+                <!--});-->
+            <!--});-->
+        <!--</script>-->
         <footer class="panel-footer panel-primary">
             <div>
                 <p>Team Codeberry Black</p>
@@ -75,7 +93,6 @@
 </div>
 <script src="scripts/libs/handlebars.min.js"></script>
 <script src="scripts/app/languages-template.js"></script>
-<script src="kendo/js/jquery.min.js"></script>
 <script src="kendo/js/kendo.web.min.js"></script>
 <script src="scripts/libs/bootstrap.min.js"></script>
 <script src="scripts/libs/prettify.js"></script>
