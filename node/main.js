@@ -388,9 +388,25 @@ var server = {
     
     send({result: 0});
   },
-  diff_game: function(params, send){
+  game_diff: function(params, send){
+    if(!params.id){send(1001); return;}
+    if(!games[params.id]){send(2002); return;}
+    var game = games[params.id];
+    if(!game.started){ send(2009); return;}
+    if(!game.knocks[params.userid]){ send(2010); return; }
     
-    
+    var t = ts();
+    setTimeout(function(){
+      // here is a little complex ...
+      // is game over ...
+      // 
+      // check players answers
+      // increase turns
+      // increase turnuntil
+      // send next answer
+      
+      send({result: 0});
+    }, game.turnuntil - t);
   },
   options: {
     hostname: 'localhost',
@@ -413,6 +429,8 @@ var server = {
     2006: "You have too slow connection for this game.",
     2007: "This is a demo game.",
     2008: "You are not the host of the game.",
+    2009: "Game is not started.",
+    2010: "You are not playing this game.",
     
     
     
@@ -428,7 +446,7 @@ var server = {
     "/users": ["list_users", false],
     "/joingame": ["join_game", true],
     "/startgame": ["start_game", true],
-    
+    "/turn": ["game_diff", true],
     
   },
   check_auth: function(auth){
