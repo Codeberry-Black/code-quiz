@@ -68,8 +68,15 @@ var dt = 100;
 var server = {
   list_languages: function(params, send){
     var result = [];
-    for(var k in langs){ result.push({name: langs[k].name, count: langs[k].data.length}); }
-    send({result: 0, languages: result});
+    var langcnt = 0, snippetscnt = 0;
+    
+    for(var k in langs){ 
+      langcnt ++;
+      snippetscnt += langs[k].data.length;
+      
+      result.push({name: langs[k].name}); 
+    }
+    send({result: 0, languages: result, counts: {languages: langcnt, snippets: snippetscnt}});
   },
   list_users: function(params, send){
     var result = [];
