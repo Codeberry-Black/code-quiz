@@ -4,6 +4,9 @@ var fs = require('fs'),
     path = require('path'),
     http = require('http');
 
+
+var start_rating = 1000;
+
 var langs = {},
     games = {},
     users = {};
@@ -23,6 +26,14 @@ var get_json = function(name, callback){
   fs.readFile(filePath, 'utf8', function (err, data) {
     if (err) {console.log(err);}
     data = JSON.parse(data);
+    callback(data);
+  });
+};
+
+var save_json = function(name, data, callback){
+  var filePath = path.normalize('../data/'+name+'.json');
+  fs.writeFile(filePath, JSON.stringify(data),{encoding: "utf8"}, function (err, data) {
+    if (err) {console.log(err);}
     callback(data);
   });
 };
@@ -161,10 +172,15 @@ var server = {
         id: params.id,
         name: params.name,
         auth: params.auth,
-        rating: 100,
+        rating: start_rating,
         gameid: 0,
         mana: 0
       };
+      
+      save_json('users', users, function(){
+        send({result: 0});
+      });
+      return;
     }else{
       users[params.id].auth = params.auth;
     }
@@ -237,18 +253,6 @@ var server = {
     
     game = games[params.gameid];
     // do we have a user that did not knocked ...
-    
-    for (var k in game.players){
-      if( ! game.knocks[ game.players[k] ] )
-      
-    }
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -339,6 +343,7 @@ var server = {
           var sparts = parts[k].split('=');
           if(sparts[0] === ''){continue;}
           if(sparts.length == 1){ sparts[1] = ''; }
+          sparts[1] = sparts[1].split("+").join(" ");
           params[sparts[0]] = decodeURIComponent(sparts[1]);
         }
         
