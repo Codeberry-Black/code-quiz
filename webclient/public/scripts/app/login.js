@@ -33,8 +33,11 @@ function getProfileInfo() {
         holder.append("<img src =" + url + "/><h1 id='greetings'>" + name + "</h1>");
         var userAuth = FB.getAccessToken();
         var userID = FB.getUserID();
-        app.viewModels.apiCall("login",{name:name,auth:userAuth,userID:userID},null);
-        kendo.navigate();
+        app.apiCall("login",{name:name,auth:userAuth,id:userID},function(){});
+        app.router.route("game", function() {
+            console.log("navigated to bar");
+        });
+
     });
     $("#log").css("display", "none");
 }
