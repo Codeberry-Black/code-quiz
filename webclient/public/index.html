@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Code Quiz</title>
+
     <link rel="shortcut icon" href="imgs/favicon.ico" type="image/x-icon">
     <link rel="icon" href="imgs/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="http://bootswatch.com/flatly/bootstrap.min.css"/>
@@ -47,18 +48,8 @@
             </div>
             <!-- /.container-fluid -->
         </nav>
-        <div data-role="view" id="welcome" data-layout="default" class="welcome" data-model="loginViewModel">
-            <div class="welcome-text">
-                <figure class="header-image"><img src="imgs/h.png" alt="Join you in world code quiz"/></figure>
-                <div class="text-info"></div>
-                <p class="welcome-about">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium adipisci
-                    amet dicta eveniet in iure, maiores quam quibusdam rem repellendus. Adipisci fugiat illo in iste
-                    iusto maiores molestias, necessitatibus tempora.</p>
-                <br/>
-                <input type="button" class="btn btn-success" value="PLAY >"/>
-            </div>
-            <figure><img src="imgs/logo.png" alt="code-quiz-logo"/></figure>
-            <div class="img-responsive codecloud"/>
+        <div data-role="view" id="main-layout" data-layout="default" class="welcome" data-model="gamesViewModel">
+
         </div>
         <footer class="panel-footer panel-primary">
             <div>
@@ -70,6 +61,17 @@
         </footer>
     </main>
 </div>
+<!--<script>
+    $(document).ready(function() {
+        var viewModel = kendo.observable({
+            listener: function(e) {
+                console.log("Event: " + e.type);
+            }
+        });
+
+        kendo.bind($("#main-layout"), viewModel);
+    });
+</script>-->
 <script src="kendo/js/jquery.min.js"></script>
 <script src="kendo/js/kendo.web.min.js"></script>
 <script src="scripts/libs/bootstrap.min.js"></script>

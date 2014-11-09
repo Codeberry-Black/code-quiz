@@ -1,6 +1,22 @@
 var app = (function () {
     'use strict';
 
+    window.fbAsyncInit = function () {
+        FB.init({
+            appId: '733423956732622',
+            status: true, // check login status
+            cookie: true, // enable cookies to allow the server to access the session
+            xfbml: true  // parse XFBML
+        });
+    };
+    (function (d) {
+        var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+        if (d.getElementById(id)) { return; }
+        js = d.createElement('script'); js.id = id; js.async = true;
+        js.src = "//connect.facebook.net/en_US/all.js";
+        ref.parentNode.insertBefore(js, ref);
+    }(document));
+
     var port = 12346;
 
     var applicationSettings = {
@@ -10,9 +26,7 @@ var app = (function () {
 
     var router = new kendo.Router();
 
-    router.route("/games(/:category)(/:id)", function(category, id) {
-        console.log(category, "item with", id, " was requested");
-    });
+    router.route("games");
 
     router.start();
         
@@ -32,39 +46,17 @@ var app = (function () {
         activities.sync();*/
     };
 
-    // login view model
-    var loginViewModel = (function () {
-        var loginWithFacebook = function() {
-            facebook.getAccessToken(function(token) {
-                el.Users.loginWithFacebook(token)
-                .then(function () {
-                    return usersModel.load();
-                })
-                .then(function () {
-                    mobileApp.hideLoading();
-                    mobileApp.navigate('views/activitiesView.html');
-                        kendo.navi
-                })
-                .then(null, function (err) {
-                    mobileApp.hideLoading();
-                    if (err.code = 214) {
-                        showError("The specified identity provider is not enabled in the backend portal.");
-                    }
-                    else {
-                        showError(err.message);
-                    }
-                });
-            })
-        };
-        return {
-            loginWithFacebook: loginWithFacebook
-        };
-    }());
-
     var apiCall = function (method, params, cb) {
+        if (typeof FB !== 'undefined')
+        {
+            var auth = FB.getAccessToken();
+            if(auth) params.auth = auth;
+        }
+
         $.getJSON('http://localhost:' + port+'/'+method, params, function(result){
             if(result.result !== 0){
                 console.assert(result, 'Stupid error message');
+                alert(result.message);
             } else {
                 cb(result);
             }
@@ -83,9 +75,6 @@ var app = (function () {
     };
 
     return {
-        viewModels: {
-            login: loginViewModel
-        },
         apiCall: apiCall,
         router: router
     };

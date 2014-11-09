@@ -31,12 +31,11 @@ function getProfileInfo() {
         var name = response.name;
         var url = "https://graph.facebook.com/" + response.id + "/picture";
         holder.append("<img src =" + url + "/><h1 id='greetings'>" + name + "</h1>");
-        var userAuth = FB.getAccessToken();
         var userID = FB.getUserID();
-        app.apiCall("login",{name:name,auth:userAuth,id:userID},function(){});
-        app.router.route("game", function() {
+        app.apiCall("login",{name:name,id:userID},function(){});
+        /*app.router.route("game", function() {
             console.log("navigated to bar");
-        });
+        });*/
 
     });
     $("#log").css("display", "none");

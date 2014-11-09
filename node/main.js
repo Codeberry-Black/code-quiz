@@ -13,7 +13,7 @@ var langs = {},
 
 var ts = function(){
   var hrTime = process.hrtime();
-  return hrTime[0] * 1000000 + hrTime[1] / 1000;
+  return (hrTime[0] * 1000000 + hrTime[1] / 1000) / 1000;
 };
 
 var get_snippet = function(lang, id){
@@ -106,12 +106,12 @@ var reset_game_given_answers = function(gameid){
 var score_game_given_answers = function(gameid){
   var ans = get_game_current_answer(gameid);
   if( !ans ){ return false; }
-  
+  /*
   for(  ){
     
     
   }
-  
+  */
   
   
 };
@@ -154,9 +154,9 @@ var get_userdatas = function(userids){
 
 var dt = 100;
 
-var knockdt = 3000000;
-var answertime = 10000000;
-var knockdt = 3000000000000000;
+var knockdt = 3000;
+var answertime = 10000;
+var magictime = 5000;
 
 var server = {
   list_languages: function(params, send){
