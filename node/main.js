@@ -68,7 +68,7 @@ var dt = 100;
 var server = {
   list_languages: function(params, send){
     var result = [];
-    for(var k in langs){ result.push(langs[k].name); }
+    for(var k in langs){ result.push({name: langs[k].name, count: langs[k].data.length}); }
     send({result: 0, languages: result});
   },
   list_users: function(params, send){
