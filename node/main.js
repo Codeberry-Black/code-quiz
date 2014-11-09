@@ -122,7 +122,7 @@ var send_question = function(params){
 	if(!params.id){send(1001); return;}
 	if(ts() > game.turnuntil){send(2006); return;};
 	
-	games[params.id].given[params.userid] = {answer: params.answer, time = game.turnuntil - game.ts()};
+	games[params.id].given[params.userid] = {answer: params.answer, time: game.turnuntil - game.ts()};
 };
 
 var get_game_current_answer = function(gameid){
