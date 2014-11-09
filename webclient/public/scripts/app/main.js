@@ -65,34 +65,34 @@ var app = (function () {
         });
         activities.sync();*/
     };
-    var gamesModel = (function () {
-        var currentUser = kendo.observable({ data: null });
-        var usersData;
-        var loadGames = function () {
-            return  //TODO load from server el.Users.currentUser()
-            .then(function (data) {
-                var currentUserData = data.result;
-                //currentUserData.PictureUrl = AppHelper.resolveProfilePictureUrl(currentUserData.Picture);
-                currentUser.set('data', currentUserData);
-                return ;//TODO get games list el.Users.get();
-            })
-            .then(function (data) {
-                gamesData = new kendo.data.ObservableArray(data.result);
-            })
-            .then(null,
-                  function (err) {
-                      showError(err.message);
-                  }
-            );
-        };
-        return {
-            load: loadGames,
-            games: function () {
-                return gamesData;
-            },
-            currentUser: currentUser
-        };
-    }());
+//    var gamesModel = (function () {
+//        var currentUser = kendo.observable({ data: null });
+//        var usersData;
+//        var loadGames = function () {
+//            return  //TODO load from server el.Users.currentUser()
+//            .then(function (data) {
+//                var currentUserData = data.result;
+//                //currentUserData.PictureUrl = AppHelper.resolveProfilePictureUrl(currentUserData.Picture);
+//                currentUser.set('data', currentUserData);
+//                return ;//TODO get games list el.Users.get();
+//            })
+//            .then(function (data) {
+//                gamesData = new kendo.data.ObservableArray(data.result);
+//            })
+//            .then(null,
+//                  function (err) {
+//                      showError(err.message);
+//                  }
+//            );
+//        };
+//        return {
+//            load: loadGames,
+//            games: function () {
+//                return gamesData;
+//            },
+//            currentUser: currentUser
+//        };
+//    }());
 
     // login view model
     var loginViewModel = (function () {
@@ -117,7 +117,7 @@ var app = (function () {
                     }
                 });
             })
-        } 
+        };
         return {
             login: login,
             loginWithFacebook: loginWithFacebook
@@ -175,6 +175,17 @@ var app = (function () {
         });
     };
 
+    var languages = function (method, params, cb) {
+        $.getJSON('localhost:' + port + '/languages', params, function(result){
+            if(result.result !== 0){
+                console.assert(result, 'Stupid error message');
+            } else {
+                cb(result);
+                console.log(result);
+            }
+        });
+    };
+
     return {
         viewModels: {
             login: loginViewModel,
@@ -182,7 +193,8 @@ var app = (function () {
             signup: singupViewModel,
             usersModel: usersModel,
             playingGame: playingGameViewModel,
-            apiCall: apiCall
+            apiCall: apiCall,
+            languages: languages
         },
         mobileApp: mobileApp,
         joinToGame: joinToGame

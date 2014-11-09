@@ -14,56 +14,65 @@
 </head>
 <body>
 <div class="container">
-<main>
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid" id="navfluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand nav-logo" href="./index.html"><img src="imgs/plainlogo.png" alt="code quiz logo"/></a>
+    <main>
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid" id="navfluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand nav-logo" href="./index.html"><img src="imgs/plainlogo.png"
+                                                                              alt="code quiz logo"/></a>
+                </div>
+                <div class="collapse navbar-collapse" id="navigationbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="game.html">Battle Play</a></li>
+                        <li><a href="fame.html">Hall Of Fame</a></li>
+                        <li><a href="languages.html">Languages</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <div id="fb-root"></div>
+                            <fb:login-button id="profile-info" class="fb-login-button"
+                                             data-size="large" show-faces="false" width="200"
+                                             data-auto-logout-link="true" max-rows="1" id="log">
+                            </fb:login-button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
             </div>
-            <div class="collapse navbar-collapse" id="navigationbar">
-                <ul class="nav navbar-nav">
-                    <li><a href="game.html">Battle Play</a></li>
-                    <li><a href="fame.html">Hall Of Fame</a></li>
-                    <li><a href="languages.html">Languages</a></li>
-                    <li><a href="feedback.html">Feedback</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><div id="fb-root"></div>
-                        <fb:login-button id="profile-info" class="fb-login-button"
-                                         data-size="large" show-faces="false" width="200"
-                                         data-auto-logout-link="true" max-rows="1" id="log" >
-                        </fb:login-button>
-                    </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-    <div data-role="view" id="welcome" data-layout="default" class="welcome" data-model="loginViewModel">
-        <div class="welcome-text">
-            <figure class="header-image"><img src="imgs/h.png" alt="Join you in world code quiz"/></figure>
-            <div class="text-info"></div>
-            <p class="welcome-about">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium adipisci amet dicta eveniet in iure, maiores quam quibusdam rem repellendus. Adipisci fugiat illo in iste iusto maiores molestias, necessitatibus tempora.</p>
-            <br/>
-            <input type="button" class="btn btn-success" value="PLAY >"/>
+            <!-- /.container-fluid -->
+        </nav>
+        <div data-role="view" id="welcome" data-layout="default" class="welcome" data-model="loginViewModel">
+            <div class="welcome-text">
+                <figure class="header-image"><img src="imgs/h.png" alt="Join you in world code quiz"/></figure>
+                <div class="text-info"></div>
+                <p class="welcome-about">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium adipisci
+                    amet dicta eveniet in iure, maiores quam quibusdam rem repellendus. Adipisci fugiat illo in iste
+                    iusto maiores molestias, necessitatibus tempora.</p>
+                <br/>
+                <input type="button" class="btn btn-success" value="PLAY >"/>
+            </div>
+            <figure><img src="imgs/logo.png" alt="code-quiz-logo"/></figure>
+            <div class="img-responsive codecloud"/>
         </div>
-        <figure><img src="imgs/logo.png" alt="code-quiz-logo"/></figure>
-        <div class="img-responsive codecloud"/></div>
-    </div>
-    <script src="scripts/app/login.js"></script>
-    <script src="scripts/libs/bootstrap.min.js"></script>
-    <footer class="panel-footer panel-primary">
-        <div>
-            <br/>
-            <p>Team Codeberry Black</p>
-        </div>
-    </footer>
-</main>
+        <footer class="panel-footer panel-primary">
+            <div>
+                <p>Team Codeberry Black</p>
+                <p class="text-left github"><a href="https://github.com/Codeberry-Black/code-quiz">Fork me on GitHub</a>
+                </p>
+                <p class="text-right"><a href="http://hakfmi.com">HackFMI</a></p>
+            </div>
+        </footer>
+    </main>
+</div>
+<script src="scripts/app/login.js"></script>
+<script src="scripts/libs/bootstrap.min.js"></script>
 <script src="scripts/app/login.js"></script>
 <script src="kendo/js/jquery.min.js"></script>
 <script src="scripts/libs/bootstrap.min.js"></script>

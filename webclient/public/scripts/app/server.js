@@ -25,9 +25,4 @@ app.get('/feedback', function  (req, res) {
     res.renderFile('feedback.html');
 });
 
-app.get('/games', function  (req, res) {
-    games = JSON.parse(res);
-    res.send(gameRooms);
-});
-
 app.listen(8000);
