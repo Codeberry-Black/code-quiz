@@ -8,6 +8,12 @@ var langs = {},
     games = {},
     users = {};
 
+var ts = function(){
+  var hrTime = process.hrtime();
+  console.log(hrTime[0] * 1000000 + hrTime[1] / 1000)
+  return 0;
+};
+
 var get_snippet = function(lang, id){
       var filePath = path.normalize('../data/snippets/'+lang+"/"+id);
       return fs.readFileSync(filePath, 'utf8').toString();
@@ -98,10 +104,20 @@ var server = {
       var g = games[k];
       if(g.started){continue;}
       
+      var players = [];
+      for (var i in g.players){
+        var pid = g.players[i];
+        players.push({
+          id: users[pid].id,
+          name: users[pid].name,
+          rating: users[pid].rating
+        });
+      }
+      
       result.push({
         creator: users[g.creator].name,
         creatorid: users[g.creator].id,
-        players: g.players,
+        players: players,
         maxplayers: g.maxplayers,
         name: g.name,
         id: g.id
@@ -164,7 +180,7 @@ var server = {
     if(!params.name){send(1004); return;}
     if(!params.turns){params.turns = 20;}
     
-    if( users[ params.userid ].gameid > 0 ){
+    if(users[ params.userid ].gameid > 0){
       // TODO: this should check if the game is not started or the game is started and turnuntil < now() else send error 
       //games[users[ params.userid ].gameid] = undefined;
     }
@@ -176,6 +192,7 @@ var server = {
       maxplayers: params.players,
       turn: 0,
       turnuntil: 0,
+      playerknocks: {},      
       name: params.name,
       started: false,
       magictime: false,
@@ -191,10 +208,24 @@ var server = {
       games[id].questions.push(get_snippet(set[i].lang, set[i].id));
     }
     
-    //send({result:0});
     send({result:0, game: games[id]});
   },
-  
+  join_game: function(params, send){
+    // so ... this is the knock - knock thing ...
+    
+    
+    ts();
+    
+    send({result: 0});
+  },
+  start_game: function(params, send){
+    
+    
+  },
+  diff_game: function(params, send){
+    
+    
+  },
   options: {
     hostname: 'localhost',
     port: 12346
@@ -219,6 +250,7 @@ var server = {
     "/creategame": ["create_game", true],
     "/languages": ["list_languages", false],
     "/users": ["list_users", false],
+    "/joingame": ["join_game", true],
     
     
   },

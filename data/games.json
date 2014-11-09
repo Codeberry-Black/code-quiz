@@ -1,5 +1,6 @@
 {
   "0": {
+     "id": 0,
      "players": [1],
      "creator": 1,
      "maxplayers": 2,
@@ -15,6 +16,7 @@
      ]
   },
   "1": {
+     "id": 1,
      "players": [7],
      "creator": 7,
      "maxplayers": 4,
