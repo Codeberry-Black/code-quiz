@@ -9,7 +9,6 @@ var gamesViewModel = (function () {
         var gameList = $('#game-list');
         for(var k in games)
         {
-            console.log(k , games[k]);
             var game= games[k];
             var gameTemplate = kendo.template($('#game-list-template').html());
             gameList.append(gameTemplate({
@@ -26,7 +25,16 @@ var gamesViewModel = (function () {
             /*router.navigate($(this).attr('rel'));
             *//*alert($(this).attr('rel'))*//*
             router.start();*/
-        })
+        });
 
+        $('#button-create').on('click', function(){
+            alert('aaaaaaaaaaa')
+            app.apiCall("creategame",{
+                players:4,
+                name:'HackFMI '+ games.length,
+                turns:10},function(data){
+            });
+        });
     });
+
 }());

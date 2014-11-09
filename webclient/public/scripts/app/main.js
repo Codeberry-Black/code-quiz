@@ -47,12 +47,21 @@ var app = (function () {
     };
 
     var apiCall = function (method, params, cb) {
-        if (typeof FB !== 'undefined')
+        /*if (typeof FB !== 'undefined')
         {
             var auth = FB.getAccessToken();
-            if(auth) params.auth = auth;
-            $.cookie('auth','auth');
-        }
+            if(auth) {
+                params.auth = auth;
+                $.cookie('auth',auth);
+            }
+        }*/
+        /*else
+        {*/
+            var auth = $.cookie('auth');
+            if(auth) {
+                params.auth = auth;
+            }
+        /*}*/
 
         $.getJSON('http://localhost:' + port+'/'+method, params, function(result){
             if(result.result !== 0){
