@@ -83,21 +83,46 @@ var get_game_set = function(count, ansCount){
 var get_game_current_question = function(gameid){
   if(!games[gameid]){return false;}
   var game = games[gameid];
-  if(!game){return false;}
+  if(!game.started){return false;}
   if(game.turn >= games[gameid].questions.length){ return false; }
   
-  var data = {
+  return {
     question: game.questions[game.turn],
     answers: game.answers[game.turn][1]
   };
 };
 
+var reset_game_given_answers = function(gameid){
+  if(!games[gameid]){return;}
+  
+  var given = {};
+  for( var i=0; i < games[gameid].players ;i++ ){
+    given[games[gameid].players ] = {answer: '', time: 0};
+  }
+  
+  games[gameid].given = given;
+};
+
+var score_game_given_answers = function(gameid){
+  var ans = get_game_current_answer(gameid);
+  if( !ans ){ return false; }
+  
+  for(  ){
+    
+    
+  }
+  
+  
+  
+};
+
+
+
 var get_game_current_answer = function(gameid){
   if(!games[gameid]){return false;}
   var game = games[gameid];
   if(!game){return false;}
-  if(game.turn >= games[gameid].questions.length){ return false; }
-  
+  if(game.turn >= game.questions.length){ return false; }
   return game.answers[game.turn][0];  
 };
 
@@ -123,6 +148,8 @@ var get_userdatas = function(userids){
 var dt = 100;
 
 var knockdt = 3000000;
+var answertime = 10000000;
+var knockdt = 3000000000000000;
 
 var server = {
   list_languages: function(params, send){
@@ -276,17 +303,20 @@ var server = {
             send(2001);
             return;
           }else{
-            delete games[users[params.userid].gameid];
+            //delete games[users[params.userid].gameid];
           }
         }
       }
     }
+   
     
-    if( games[[params.id]].started){
+    /*
+    if(games[params.id].started){
       send(2004);
       return;
     }
-    
+    */
+   
     game = games[params.id];
     
     if(!game.knocks){
@@ -337,14 +367,26 @@ var server = {
     var players = get_userdatas(knocked);
     var question = get_game_current_question(game.id);
     
-    send({result: 0, started: game.started, players: players, question: question});
+    send({
+      result: 0, 
+      started: game.started, 
+      players: players, 
+      question: question,
+      name: game.name,
+      id: game.id,
+      maxplayers: game.maxplayers
+    });
   },
   start_game: function(params, send){
     if(!params.id){send(1001); return;}
     if(!games[params.id]){send(2002); return;}
-    if(!games[params.id]){send(2002); return;}
+    if(games[params.id].creator !== params.userid ){send(2008); return;}
     
+    games[params.id].started = true;
+    games[params.id].turnuntil = ts() + answertime;
+    reset_game_given_answers( params.id );
     
+    send({result: 0});
   },
   diff_game: function(params, send){
     
@@ -370,6 +412,9 @@ var server = {
     2005: "The host left the game.",
     2006: "You have too slow connection for this game.",
     2007: "This is a demo game.",
+    2008: "You are not the host of the game.",
+    
+    
     
     4000: "Method not found.",
     5000: "Inernal server error."
@@ -382,6 +427,7 @@ var server = {
     "/languages": ["list_languages", false],
     "/users": ["list_users", false],
     "/joingame": ["join_game", true],
+    "/startgame": ["start_game", true],
     
     
   },
