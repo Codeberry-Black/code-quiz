@@ -46,51 +46,11 @@
     <section data-role="layout" data-id="default">
         <!--View content will render here-->
     </section>
-    <div class="content">
-        <article>
-            <br/>
-            <div id="game" class="panel panel-primary">
-                <div class="panel-heading">
-                    <span class="time-text">Time: </span>
-                    <div class="progress progress-striped active time">
-                        <span class="progress-bar" style="width: 30%"></span>
-                    </div>
-                </div>
-                <div id="code-here">
-                    <br/>
-                    <pre>
-def is_palindrome(s):
-	s = str(s).lower()
-	s = re.sub('[\W+]', '', s)
-
-	if len(s) <= 1:
-		return True
-	elif s[:1] != s[len(s)-1:]:
-		return False
-	else:
-		return is_palindrome(s[1:len(s)-1])
-                    </pre>
-                    <br/>
-                    <div id="answers-container">
-                        <div id="possible-answers" class="navbar-collapse collapse">
-                            <ul class="navbar-nav">
-                                <li><a href="#" class="btn btn-default">JavaScript</a></li>
-                                <li><a href="#" class="btn btn-default">Python</a></li>
-                                <li><a href="#" class="btn btn-default">Ruby</a></li>
-                                <li><a href="#" class="btn btn-default">Pascal</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <span class="icon-magic"></span>
-            <br/>
-        </article>
-    </div>
     <footer class="panel-footer panel-primary">
         <div>
-            <br/>
             <p>Team Codeberry Black</p>
+            <p class="text-left github"><a href="https://github.com/Codeberry-Black/code-quiz">Fork me on GitHub</a></p>
+            <p class="text-right"><a href="http://hakfmi.com">HackFMI</a></p>
         </div>
     </footer>
 </main>

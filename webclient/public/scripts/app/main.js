@@ -53,7 +53,7 @@ var app = (function () {
                     }
                 });
             })
-        } 
+        };
         return {
             loginWithFacebook: loginWithFacebook
         };
@@ -69,9 +69,21 @@ var app = (function () {
         });
     };
 
+    var languages = function (method, params, cb) {
+        $.getJSON('localhost:' + port + '/languages', params, function(result){
+            if(result.result !== 0){
+                console.assert(result, 'Stupid error message');
+            } else {
+                cb(result);
+                console.log(result);
+            }
+        });
+    };
+
     return {
         viewModels: {
             login: loginViewModel
+
         },
         mobileApp: mobileApp,
         joinToGame: joinToGame,
