@@ -48,6 +48,12 @@ nav > ul > li{
     height: 250px;
 }
 
+.codecloud-abs{
+    background: url('../imgs/codecloud.png');
+    height: 250px;
+    margin-top: -200px;
+}
+
 .welcome-about{
     padding: 5px;
     border-right: 10px;
@@ -127,7 +133,7 @@ footer{
 }
 
 /*Game rooms*/
-.rooms-container{
+.rooms-container, #templateHighscoresContainer{
     align-content: center;
     max-width: 700px;
     margin: 0 auto;
@@ -149,4 +155,21 @@ footer{
 .room > ul > li:hover{
     background-color: #dcdcdc;
     cursor: default;
+}
+
+#templateHighscoresContainer{
+    max-width: 700px;
+}
+
+.top-players{
+    margin-top: 50px;
+}
+
+.user-list-item{
+    min-height: 80px;
+}
+
+.user-list-item > img{
+    float: left;
+    margin: 0 15px;
 }

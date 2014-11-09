@@ -25,4 +25,8 @@ app.get('/feedback', function  (req, res) {
     res.renderFile('feedback.html');
 });
 
+app.get('/feedback', function  (req, res) {
+    res.renderFile('feedback.html');
+});
+
 app.listen(8000);
