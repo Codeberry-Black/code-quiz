@@ -1,0 +1,32 @@
+{
+  "0": {
+     "players": [1],
+     "creator": 1,
+     "maxplayers": 2,
+     "turn": 0,
+     "turnuntil": 0,
+     "name": "Sample room",
+     "started": false,
+     "questions": [
+        "console.log('Hello world')"
+     ],
+     "answers": [
+        ["js", ["cpp","js","java"]]
+     ]
+  },
+  "1": {
+     "players": [7],
+     "creator": 7,
+     "maxplayers": 4,
+     "turn": 0,
+     "turnuntil": 0,
+     "name": "Sample room 2",
+     "started": false,
+     "questions": [
+        "console.log('Hello world')"
+     ],
+     "answers": [
+        ["js", ["cpp","js","java"]]
+     ]
+  }
+}

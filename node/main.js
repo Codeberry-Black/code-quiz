@@ -85,8 +85,8 @@ var server = {
     }
     
     result.sort(function(a, b){
-      if(a.rating< b.rating) return -1;
-      if(a.rating > b.rating) return 1;
+      if(a.rating > b.rating) return -1;
+      if(a.rating < b.rating) return 1;
       return 0;
     });
     
@@ -224,7 +224,7 @@ var server = {
   },
   check_auth: function(auth){
     for (var k in users){
-      console.log(users[k].auth == auth);
+      //console.log(users[k].auth == auth);
       if(users[k].auth == auth){
         return users[k].id;
       }
@@ -300,18 +300,16 @@ var init = function(){
         langs[k].data = ret[k];
       }
       get_json('users', function(ret){
-        
-        http.createServer(function(request,response){ 
-          console.log(request.url);
-          server.instance(request, response);
-        }).listen(server.options.port, server.options.host);      
-
-        
-        console.log(ret);
+        users = ret;
+        get_json('games', function(ret){
+          games = ret;
+          
+          http.createServer(function(request,response){ 
+            console.log(request.url);
+            server.instance(request, response);
+          }).listen(server.options.port, server.options.host);      
+        });
       });
-
-      // GET USERS
-      // GET GAMES
     });
   });
 };
