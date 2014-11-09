@@ -12,6 +12,15 @@ var playViewModel = (function () {
                 snippetContainer.append(snippetTemplate({
                     snippet: ret.question
                 }));
+                var usersContainer = $('#users-list');
+                for(var i in ret.players){
+                    var player = ret.players[i];
+                    var usersTemplate = kendo.template($('users-template').html());
+                    usersContainer.append(usersTemplate({
+                        points: player.rating,
+                        playerName: player.name
+                    }));
+                }
             }
             setTimeout(function(){f()},250)
         });
