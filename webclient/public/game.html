@@ -2,9 +2,126 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <title>Code Quiz</title>
+    <link rel="shortcut icon" href="imgs/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="imgs/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="http://bootswatch.com/flatly/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/code-styles.css"/>
+    <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+
 </head>
 <body>
+<main>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid" id="navfluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand nav-logo" href="./index.html"><img src="imgs/plainlogo.png" alt="code quiz logo"/></a>
+            </div>
+            <div class="collapse navbar-collapse" id="navigationbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="game.html">Battle Play</a></li>
+                    <li><a href="fame.html">Hall Of Fame</a></li>
+                    <li><a href="languages.html">Languages</a></li>
+                    <li><a href="feedback.html">Feedback</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><div id="fb-root"></div>
+                        <fb:login-button id="profile-info" class="fb-login-button"
+                                         data-size="large" show-faces="false" width="200"
+                                         data-auto-logout-link="true" max-rows="1" id="log" >
+                        </fb:login-button>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <section data-role="layout" data-id="default">
+        <!--View content will render here-->
+    </section>
+    <div class="content">
+        <article>
+            <br/>
+            <div id="game" class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="time-text">Time: </span>
+                    <div class="progress progress-striped active time">
+                        <span class="progress-bar" style="width: 30%"></span>
+                    </div>
+                </div>
+                <div id="code-here">
+                    <br/>
+                    <pre>
+def is_palindrome(s):
+	s = str(s).lower()
+	s = re.sub('[\W+]', '', s)
 
+	if len(s) <= 1:
+		return True
+	elif s[:1] != s[len(s)-1:]:
+		return False
+	else:
+		return is_palindrome(s[1:len(s)-1])
+                    </pre>
+                    <br/>
+                    <div id="answers-container">
+                        <div id="possible-answers" class="navbar-collapse collapse">
+                            <ul class="navbar-nav">
+                                <li><a href="#" class="btn btn-default">JavaScript</a></li>
+                                <li><a href="#" class="btn btn-default">Python</a></li>
+                                <li><a href="#" class="btn btn-default">Ruby</a></li>
+                                <li><a href="#" class="btn btn-default">Pascal</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="icon-magic"></span>
+            <br/>
+        </article>
+    </div>
+    <footer class="panel-footer panel-primary">
+        <div>
+            <br/>
+            <p>Team Codeberry Black</p>
+        </div>
+    </footer>
+</main>
+<script>
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '733423956732622',
+            xfbml      : true,
+            version    : 'v2.2'
+        });
+    };
+
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="kendo/js/jquery.min.js"></script>
+<script src="//cdn.kendostatic.com/2014.1.318/js/kendo.all.min.js"></script>
+<script src="kendo/js/kendo.all.min.js"></script>
+<script src="scripts/libs/prettify.js"></script>
+<script src="scripts/app/login.js"></script>
+<script>
+    $(function(){
+        var view=$('pre').attr('class', 'prettyprint linenums');
+        prettyPrint();
+    });
+</script>
 </body>
 </html>
