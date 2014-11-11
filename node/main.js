@@ -103,15 +103,6 @@ var reset_game_given_answers = function(gameid){
   games[gameid].given = given;
 };
 
-var send_question = function(params){
-	var given = {};
-	if(!games[params.id]){send(2002); return;}
-	if(!params.id){send(1001); return;}
-	if(ts() > game.turnuntil){send(2006); return;};
-	
-	games[params.id].given[params.userid] = {answer: params.answer, time: game.turnuntil - game.ts()};
-};
-
 var get_game_current_answer = function(gameid){
   if(!games[gameid]){return false;}
   var game = games[gameid];
@@ -256,8 +247,13 @@ var server = {
       started: false,
       magictime: false,
       questions: [],
-      answers: []
+      answers: [],
+      player_turns: {},
+      player_manas: {}
     };
+    
+    games[id].player_turns[params.userid]=0;
+    games[id].player_manas[params.userid]=0;
     
     users[ params.userid ].gameid = id;
     
@@ -325,12 +321,17 @@ var server = {
         }else{
           cnt ++;
           knocked.push(game.players[k]);
+          games[params.id].player_turns[game.players[k]]=0;
+          games[params.id].player_manas[game.players[k]]=0;
         } 
       }
     }
     if( !meknocked ){
       knocked.push(params.userid);
       cnt ++;
+      
+      games[params.id].player_turns[params.userid]=0;
+      games[params.id].player_manas[params.userid]=0;
     }
     
     
@@ -386,19 +387,16 @@ var server = {
       var t = ts();
       var isover = false;
       
-      if(t - game.turnuntil > answertime - 500){
-        games[params.id].turnuntil = games[params.id].turnuntil + answertime;
-        games[params.id].turns = games[params.id].turns + 1;  
-      }
+
+      games[params.id].turnuntil = games[params.id].turnuntil + answertime;
+      games[params.id].turn ++;
       
       if( games[params.id].turns === games[params.id].questions.length ){
         isover = true;
       }
       
       if(isover){
-        
-        // lvar player 
-        
+        var resp = {result: 0};
         
         // HERE WE GET USERS ... 
         
@@ -411,11 +409,33 @@ var server = {
         };
       }
       
-      // check players answers
-      // send next answer
-      
       send(resp);
     }, game.turnuntil - ts());
+  },
+  receive_answer: function(params, send){
+    var given = {};
+    if(!games[params.id]){send(2002); return;}
+    if(!params.id){send(1001); return;}
+    //if(ts() > game.turnuntil){send(2006); return;};
+    var game = games[ params.id ];
+
+    var correct = (params.answer == game.answers[game.turn][0]);
+
+    var mana = 0;
+    var delta = game.turnuntil - ts();
+    // oceni manata :)
+    if(correct){
+      mana = (delta ^ 2)/1000;
+    }
+    
+    if(!params.answer){params.answer = '';}
+    games[params.id].player_manas[game.userid] += mana;
+    
+    send({
+      result:0, 
+      mana: games[params.id].player_manas[game.userid], 
+      correct: correct
+    });
   },
   options: {
     hostname: 'localhost',
@@ -456,6 +476,7 @@ var server = {
     "/joingame": ["join_game", true],
     "/startgame": ["start_game", true],
     "/turn": ["game_diff", true],
+    "/answer": ["receive_answer", true],
     
   },
   check_auth: function(auth){

@@ -1,8 +1,27 @@
 var playViewModel = (function () {
     var id = window.location.hash.substring(1) || 0;
+    window.gameid = id;
     var result = {};
     
+    $(function(){
+      $('#code-here a').on('click', function(){
+      var answer = $(this).attr('rel');
+      console.log(answer);
+      app.apiCall( 'answer', {id: id, answer: answer} , function(ret){
+        var button = $('#possible-answers a[rel='+answer+']');
+        if( ret.correct ){
+          button.addClass('success');
+        }else{
+          button.addClass('warning');
+        }
+        $('#user-mana').html( ret.mana );
+      });
+    });
       
+      
+    });
+    
+    
     $('#button-start').hide();
     app.apiCall('joingame',{id:id},function(ret){
       if(ret.ishost && !ret.started ){
@@ -47,42 +66,54 @@ var playViewModel = (function () {
               }));
             }
         });
-    };
+    }; f();
+    
+    
+  
     
     
     
     
-    f();
+    
+    
+    
+    
+    
+    
+    
+  var show_question = function(question){
+    if( !question ){return;}
+
+    $('#users-list').hide();
+    $('#game').show();
+
+    var t = 0;
+    var total = 10000;
+    var g = function(){
+      $('#remaining-time').css('width', ((t / total) * 60) + '%');
+      t += 250;
+      setTimeout(function(){g();}, 250); 
+    }; g();
+
+    var pre = $('<pre style="height: 300px;">').attr('class', 'prettyprint linenums')
+    pre.text(question.question).html();
+    $('#question').html(pre);
+    prettyPrint();
+
+    for ( var i = 0; i < 4 ;i++ ){
+      $('#answer' + (i+1))
+              .html(question.answers[i])
+              .attr('rel', question.answers[i])
+              .removeClass('success')
+              .removeClass('warning');
+    }
+
+    app.apiCall('turn', {id: window.gameid}, function(ret){
+      if( !ret.isfinal ){
+        show_question( ret.question );
+      }else{
+        alert('Game is over!');
+      }
+    });
+  };
 }());
-
-var start_diff = function(){
-  
-};
-
-
-
-var show_question = function(question){
-  if( !question ){return;}
-  
-  $('#users-list').hide();
-  $('#game').show();
-  
-  var t = 0;
-  var total = 10000;
-  var g = function(){
-    $('#remaining-time').css('width', ((t / total) * 60) + '%');
-    t += 250;
-    setTimeout(function(){g();}, 250); 
-  }; g();
-  
-  var pre = $('<pre style="height: 300px;">').attr('class', 'prettyprint linenums')
-  pre.text(question.question).html();
-  $('#question').html(pre);
-  prettyPrint();
-  
-  $('#answer1').html(question.answers[0]);
-  $('#answer2').html(question.answers[1]);
-  $('#answer3').html(question.answers[2]);
-  $('#answer4').html(question.answers[3]);
-
-};

@@ -44,8 +44,8 @@ function getProfileInfo() {
         
         
         console.log(auth);
-        $.cookie('auth',auth, {expires: 7, path: '/'});
-        $.cookie('auth',auth, {expires: 7, path: '/', domain: 'localhost'});
+        $.cookie('auth',auth, {path: '/'});
+        $.cookie('auth',auth, {path: '/', domain: 'localhost'});
         app.apiCall("login",{name:name,id:userID},function(){});
         /*app.router.route("game", function() {
             console.log("navigated to bar");
