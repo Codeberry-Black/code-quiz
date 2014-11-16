@@ -80,35 +80,26 @@ var get_game_set = function(count, ansCount){
 	return selectedSnippets;
 };
 
-var get_game_current_question = function(gameid){
+var get_game_question = function(gameid, turn){
   if(!games[gameid]){return false;}
   var game = games[gameid];
   if(!game.started){return false;}
-  if(game.turn >= games[gameid].questions.length){ return false; }
+  if(turn >= game.turns){ return false; }
+  
+  // TODO: some decoration ...
   
   return {
-    question: game.questions[game.turn],
-    answers: game.answers[game.turn][1]
+    question: game.questions[turn],
+    answers: game.answers[turn][1]
   };
 };
 
-var reset_game_given_answers = function(gameid){
-  if(!games[gameid]){return;}
-  
-  var given = {};
-  for( var i=0; i < games[gameid].players.length ;i++ ){
-    given[games[gameid].players ] = {answer: '', time: 0};
-  }
-  
-  games[gameid].given = given;
-};
-
-var get_game_current_answer = function(gameid){
+var get_game_answer = function(gameid, turn){
   if(!games[gameid]){return false;}
   var game = games[gameid];
   if(!game){return false;}
-  if(game.turn >= game.questions.length){ return false; }
-  return game.answers[game.turn][0];  
+  if(turn >= game.turns){ return false; }
+  return game.answers[turn][0];  
 };
 
 var get_userdatas = function(userids){
@@ -128,6 +119,22 @@ var get_userdatas = function(userids){
   });
 
   return result;
+};
+
+var check_user_not_in_game=function(gameid, userid){
+  if(users[userid].gameid && users[userid].gameid != gameid){
+    if(!games[users[userid].gameid]){
+      delete users[userid].gameid;
+    }else{
+      var game = games[users[userid].gameid];
+      if( !game.players[userid] ){
+        delete users[userid].gameid;
+      }else if(game.started && !game.finished){
+        return false;
+      }
+    }
+  }
+  return true;
 };
 
 var dt = 100;
@@ -224,36 +231,38 @@ var server = {
       if(!games[id]){break;}
     }
     
+    if(!check_user_not_in_game(id, params.userid)){
+      send(2001); return;
+    }
+    
     if(!params.players){send(1002); return;}
     if(!params.name){send(1004); return;}
     if(!params.turns){params.turns = 20;}
     
     params.turns = parseInt(params.turns, 10);
     
-    if(users[ params.userid ].gameid > 0){
-      // TODO: this should check if the game is not started or the game is started and turnuntil < now() else send error 
-      //games[users[ params.userid ].gameid] = undefined;
-    }
     
     games[id] = {
       id: id,
       creator: params.userid,
-      players: [params.userid],
+      players: {},
       maxplayers: params.players,
-      turn: 0,
-      turnuntil: 0,
-      knocks: {},      
-      name: params.name,
       started: false,
-      magictime: false,
+      finished: false,
+      created: ts(),
+      // magictime: false, // TODO: We could add magic diff stuff ...
+      name: params.name,
+      turns: params.turns,
       questions: [],
-      answers: [],
-      player_turns: {},
-      player_manas: {}
+      answers: []
     };
     
-    games[id].player_turns[params.userid]=0;
-    games[id].player_manas[params.userid]=0;
+    games[id].players[params.userid]={
+      turn: 0,
+      mana: 0,
+      knock: games[id].created,
+      answers: []
+    };
     
     users[ params.userid ].gameid = id;
     
@@ -266,96 +275,71 @@ var server = {
     send({result:0, game: id});
   },
   join_game: function(params, send){
-    // so ... this is the knock - knock thing ...
-    
     if(!params.id){send(1001); return;}
     if(!games[params.id]){send(2002); return;}
+    if(!check_user_not_in_game(params.id, params.userid)){
+      send(2001);
+      return;
+    }
     
-    var T = ts();
-    var game;
-    if(users[params.userid].gameid && users[params.userid].gameid !== params.id){
-      if(!games[users[params.userid].gameid] ){
-        users[params.userid].gameid = 0;
-      }else{
-        game = games[users[params.userid].gameid];
-        if(game.started){
-          if(game.turnuntil > T){
-            //send(2001);
-            //return;
-          }else{
-            //delete games[users[params.userid].gameid];
-          }
+    var game = games[params.id];
+    if(game.finished){send(2007); return;}
+    if(!game.turns){send(2007); return;}
+    
+    if(game.started && !game.players[params.userid]){send(2004); return;}
+   
+    
+    var T = ts(),
+        result=0,
+        hostleft = false,
+        players = 0;
+    for(var playerid in game.players){
+      if(game.players[playerid].knock < T - knockdt){
+        if(playerid === game.creator){
+          hostleft = true;
         }
+        if(playerid === params.userid){
+          delete games[params.id].players[playerid];
+          delete users[playerid].gameid;
+          result = 2006;
+        }
+      }else{
+        players++;
       }
     }
-   
     
-    /*
-    if(games[params.id].started){
-      send(2004);
-      return;
-    }
-    */
-   
-    game = games[params.id];
-    
-    if(!game.knocks){
-      send(2007);
-      return;
-    }
-    
-    var cnt = 0, hostleft = false, knocked  = [], meknocked = false;
-    for(var k in game.players){
-      var playerid = game.players[k];
-      if( game.knocks[playerid] ){
-        if(playerid === params.userid){meknocked = true;}
-        if(game.knocks[playerid] < T - knockdt){
-          users[playerid].gameid = 0;
-          if(playerid === game.creator){
-            hostleft = true;
-          }
-          if(playerid === params.userid){
-            send(2006);
-            return;
-          }
-        }else{
-          cnt ++;
-          knocked.push(game.players[k]);
-          games[params.id].player_turns[game.players[k]]=0;
-          games[params.id].player_manas[game.players[k]]=0;
-        } 
-      }
-    }
-    if( !meknocked ){
-      knocked.push(params.userid);
-      cnt ++;
-      
-      games[params.id].player_turns[params.userid]=0;
-      games[params.id].player_manas[params.userid]=0;
-    }
-    
-    
-    if(cnt > game.maxplayers){
-      send(2003);
-      return;
+    if(players >= game.maxplayers){
+      result = 2003;
     }
     
     if(hostleft){
+      for(var playerid in game.players){
+        delete users[playerid].gameid;
+      }
       delete games[params.id];
-      send_error(2005);
-      return;
+      result = 2005;
     }
     
-    games[params.id].players = knocked;
-    games[params.id].knocks[ params.userid ] = T;
+    if(result > 0){ send(result); return; }
     
-    var players = get_userdatas(knocked);
-    var question = get_game_current_question(game.id);
+    if(!game.players[params.userid]){
+      games[params.id].players[params.userid] = {
+        turn: 0,
+        mana: 0,
+        knock: 0,
+        answers: []
+      };
+      users[params.userid].gameid=params.id;
+    }
+    game.players[params.userid].knock = T;
+    
+    var players = get_userdatas(Object.keys(game.players));
+    var question = get_game_question(game.id, 0);
     
     send({
       result: 0, 
       ishost: params.userid === game.creator,
-      started: game.started, 
+      started: game.started,
       players: players, 
       question: question,
       name: game.name,
@@ -367,10 +351,17 @@ var server = {
     if(!params.id){send(1001); return;}
     if(!games[params.id]){send(2002); return;}
     if(games[params.id].creator !== params.userid ){send(2008); return;}
+    var T = ts();
     
     games[params.id].started = true;
-    games[params.id].turnuntil = ts() + answertime;
-    reset_game_given_answers( params.id );
+    games[params.id].players[params.userid].knock = T;
+    
+    for (var playerid in games[params.id].players){
+      if( games[params.id].players[playerid].knock < T - knockdt){
+        delete games[params.id].players[playerid];
+        delete users[playerid].gameid;
+      }
+    }
     
     send({result: 0});
   },
@@ -378,62 +369,71 @@ var server = {
     if(!params.id){send(1001); return;}
     if(!games[params.id]){send(2002); return;}
     var game = games[params.id];
-    if(!game.started){ send(2009); return;}
-    if(!game.knocks[params.userid]){ send(2010); return; }
+    if(!game.started){send(2009); return;}
+    if(!game.players[params.userid]){send(2010); return;}
+    if(game.finished){send(2007); return;}
     
+    // TODO: Is the host left?
+    
+    game.players[params.userid].knock= ts();
     setTimeout(function(){
-      // here is a little complex ...
+      games[params.id].players[params.userid].turn++;
+      if( games[params.id].players[params.userid].turn > 
+          games[params.id].players[params.userid].answers.length){
+    
+        games[params.id].players[params.userid].answers.push('');
+    
+      }
       
-      var t = ts();
-      var isover = false;
-      
-
-      games[params.id].turnuntil = games[params.id].turnuntil + answertime;
-      games[params.id].turn ++;
-      
-      if( games[params.id].turns === games[params.id].questions.length ){
-        isover = true;
+      var isover = false, cnt = 0;
+      for(var playerid in games[params.id].players){
+        if(games[params.id].turns <= games[params.id].players[playerid].turn){
+          if(params.userid === playerid){isover=true;}
+          cnt++;
+        }
+      }
+      if(cnt === Object.keys(games[params.id].players).length){
+        games[params.id].finished=true;
       }
       
       if(isover){
-        var resp = {result: 0};
-        
-        // HERE WE GET USERS ... 
-        
+        var resp = {
+          result: 0, 
+          isfinal:true,
+          mana: game.players[params.userid].mana
+        };
       }else{
         var resp = {
           result: 0,
           isfinal: false,
-          mana: games[params.id].given[params.userid].mana,
-          question: get_game_current_question(params.id)
+          mana: game.players[params.userid].mana,
+          question: get_game_question(params.id, games[params.id].players[playerid].turn)
         };
       }
-      
       send(resp);
-    }, game.turnuntil - ts());
+    }, answertime);
   },
   receive_answer: function(params, send){
     var given = {};
-    if(!games[params.id]){send(2002); return;}
     if(!params.id){send(1001); return;}
-    //if(ts() > game.turnuntil){send(2006); return;};
-    var game = games[ params.id ];
-
-    var correct = (params.answer == game.answers[game.turn][0]);
-
-    var mana = 0;
-    var delta = game.turnuntil - ts();
-    // oceni manata :)
-    if(correct){
-      mana = (delta ^ 2)/1000;
-    }
+    if(!params.answer){send(1005); return;}
+    if(!games[params.id]){send(2002); return;}
+    var game = games[params.id];
+    if(!game.started){send(2009); return;}
+    if(game.finished){send(2007); return;}
+    if(!game.players[params.userid]){send(2010); return;}
     
-    if(!params.answer){params.answer = '';}
-    games[params.id].player_manas[game.userid] += mana;
+    var correct_answer = get_game_answer(params.id, game.players[params.userid].turn),
+        correct = false;
+    if(correct_answer === params.answer){
+      correct = true;
+      var delta = ts() - game.players[params.userid].knock;
+      games[params.id].players[params.userid].mane += (delta * delta)/1000;
+    }
     
     send({
       result:0, 
-      mana: games[params.id].player_manas[game.userid], 
+      mana: games[params.id].players[params.userid].mana, 
       correct: correct
     });
   },
@@ -447,6 +447,7 @@ var server = {
     1002: "'players' is required",
     1003: "'auth' is required",
     1004: "'name' is required",
+    1005: "'answer' is required",
     
     
     2000: "Authentication failed. Access denied.",
@@ -456,7 +457,7 @@ var server = {
     2004: "Game already started.",
     2005: "The host left the game.",
     2006: "You have too slow connection for this game.",
-    2007: "This is a demo game.",
+    2007: "Game is over.",
     2008: "You are not the host of the game.",
     2009: "Game is not started.",
     2010: "You are not playing this game.",
